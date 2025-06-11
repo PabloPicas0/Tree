@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="./node_modules/d3/dist/d3.js" defer></script>
+    <script src="renderer.js" defer type="module"></script>
+    <title>Tree</title>
+  </head>
+  <body>
+    <div class="options">
+      <button class="new-tree" title="Create new tree">+</button>
+      <p>Add</p>
+    </div>
+
+    <div class="tree">
+      <p>Tree</p>
+    </div>
+
+    <div class="modal">
+      <form class="file-picker">
+        <!-- <div class="file-picker-content">
+          <label for="file">Pick File</label>
+          <input type="file" id="file" />
+        </div> -->
+
+        <div class="file-picker-content">
+          <label for="tree-name">Name</label>
+          <input type="text" name="name" id="tree-name" />
+        </div>
+
+        <div>
+          <button type="submit" class="save">Save</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
