@@ -10,6 +10,11 @@ newTree.addEventListener("click", async () => {
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const data = new FormData(form)
-  dialog.loadFile(data.get("name"));
+
+  const data = new FormData(form);
+  const name = data.get("name").trim();
+
+  if (name === "") return;
+
+  dialog.loadFile(name);
 });
