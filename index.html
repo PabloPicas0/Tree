@@ -9,29 +9,41 @@
     <title>Tree</title>
   </head>
   <body>
+    <div class="created-trees">
+      <div class="current-tree">
+        <button class="new-tree" title="Create new tree">+</button>
+        <p>Add</p>
+      </div>
+    </div>
+
     <div class="options">
-      <button class="new-tree" title="Create new tree">+</button>
-      <p>Add</p>
+      <div class="current-option">
+        <button class="option" title="Create new tree">Add</button>
+      </div>
     </div>
 
     <div class="tree">
       <p>Tree</p>
     </div>
 
-    <div class="modal">
+    <div class="modal modal-off">
       <form class="file-picker">
         <!-- <div class="file-picker-content">
           <label for="file">Pick File</label>
           <input type="file" id="file" />
         </div> -->
 
-        <div class="file-picker-content">
-          <label for="tree-name">Name</label>
-          <input type="text" name="name" id="tree-name" />
-        </div>
+        <button type="button" class="exit-modal">X</button>
 
-        <div>
-          <button type="submit" class="save">Save</button>
+        <div style="margin-top: 1rem">
+          <div class="file-picker-content">
+            <label for="tree-name">Name</label>
+            <input type="text" name="name" id="tree-name" />
+          </div>
+
+          <div>
+            <button type="submit" class="save">Save</button>
+          </div>
         </div>
       </form>
     </div>
