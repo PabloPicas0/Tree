@@ -9,6 +9,7 @@ const options = new TreesEngine();
 
 function toggleModal() {
   modal.classList.toggle("modal-off");
+  document.querySelector("#tree-name").value = ""
 }
 
 async function addNewTree(e) {
@@ -21,6 +22,7 @@ async function addNewTree(e) {
 
   await dialog.loadFile(name);
 
+  toggleModal()
   options.reload();
 }
 
