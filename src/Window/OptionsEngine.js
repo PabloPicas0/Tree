@@ -1,11 +1,26 @@
-class OptionsEngine {
+class TreesEngine {
   constructor() {
-    this.existingTrees = this.loadTreesFromDisc().then(this.drawToScreen);
+    this.loadTreesFromDisc().then(this.drawToScreen);
   }
 
   async loadTreesFromDisc() {
     const trees = (await dialog.initTrees()).map((tree) => JSON.parse(tree));
     return trees;
+  }
+
+  async reload() {
+    // Trees might be needed in constructor
+    const newTrees = await this.loadTreesFromDisc();
+
+    // TODO: add error boundry
+    if (!newTrees.length) return;
+
+    this.destroyTrees();
+    this.drawToScreen(newTrees);
+  }
+
+  destroyTrees() {
+    [...document.querySelectorAll(".current-tree")].slice(1).forEach((tree) => tree.remove());
   }
 
   drawToScreen(trees) {
@@ -14,22 +29,22 @@ class OptionsEngine {
     for (let i = 0; i < trees.length; ++i) {
       const div = document.createElement("div");
       const button = document.createElement("button");
-      const p = document.createElement("p")
-      const image = new Image(25, 25)
+      const p = document.createElement("p");
+      const image = new Image(25, 25);
       const tree = trees[i];
 
-      p.textContent = tree.name
+      p.textContent = tree.name;
       image.src = "./assets/default_user.svg";
 
-      div.classList.add("current-tree")
+      div.classList.add("current-tree");
       button.classList.add("new-tree");
-    
-      button.append(image)
+
+      button.append(image);
       div.append(button);
-      div.append(p)
+      div.append(p);
       options.append(div);
     }
   }
 }
 
-export default OptionsEngine;
+export default TreesEngine;
