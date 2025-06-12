@@ -9,7 +9,13 @@ async function filePing(e, name) {
 
   if (fileNameExists) return;
 
-  const initial = JSON.stringify(`{"name": ${name}, "tree": {}}`);
+  const newFileContent = {
+    name,
+    image: "",
+    options: {},
+    tree: {},
+  };
+  const initial = JSON.stringify(newFileContent);
 
   return await fs.writeFile(`./trees/${name}.json`, initial, "utf-8");
 }
