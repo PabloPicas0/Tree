@@ -9,7 +9,7 @@ const options = new TreesEngine();
 
 function toggleModal() {
   modal.classList.toggle("modal-off");
-  document.querySelector("#tree-name").value = ""
+  document.querySelector("#tree-name").value = "";
 }
 
 async function addNewTree(e) {
@@ -18,11 +18,14 @@ async function addNewTree(e) {
   const data = new FormData(form);
   const name = data.get("name").trim();
 
-  if (name === "") return;
+  if (name === "") {
+    toggleModal();
+    return;
+  }
 
   await dialog.loadFile(name);
 
-  toggleModal()
+  toggleModal();
   options.reload();
 }
 
