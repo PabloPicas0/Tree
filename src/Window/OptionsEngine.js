@@ -34,6 +34,7 @@ class TreesEngine {
       const tree = trees[i];
 
       p.textContent = tree.name;
+      p.style.wordBreak = "break-word";
       image.src = "./assets/default_user.svg";
 
       div.classList.add("current-tree");
