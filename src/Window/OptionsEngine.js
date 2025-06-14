@@ -1,6 +1,7 @@
 class TreesEngine {
-  constructor() {
-    this.loadTreesFromDisc().then(this.drawToScreen);
+  constructor(deleteTreeOption) {
+    this.deleteTreeOption = deleteTreeOption;
+    this.loadTreesFromDisc().then(this.drawToScreen.bind(this));
   }
 
   async loadTreesFromDisc() {
@@ -26,6 +27,8 @@ class TreesEngine {
   drawToScreen(trees) {
     const options = document.querySelector(".created-trees");
 
+    this.deleteTreeOption.dataset.name = trees[0]?.name
+
     for (let i = 0; i < trees.length; ++i) {
       const div = document.createElement("div");
       const button = document.createElement("button");
@@ -39,6 +42,10 @@ class TreesEngine {
 
       div.classList.add("current-tree");
       button.classList.add("new-tree");
+
+      button.addEventListener("click", () => {
+        this.deleteTreeOption.dataset.name = tree.name;
+      });
 
       button.append(image);
       div.append(button);
