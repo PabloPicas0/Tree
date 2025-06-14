@@ -4,8 +4,9 @@ const modal = document.querySelector(".modal");
 const newTree = document.querySelector(".new-tree");
 const form = document.querySelector(".file-picker");
 const exitModal = document.querySelector(".exit-modal");
+const deleteTreeOption = document.querySelector(".delete");
 
-const options = new TreesEngine();
+const options = new TreesEngine(deleteTreeOption);
 
 function toggleModal() {
   modal.classList.toggle("modal-off");
@@ -29,6 +30,14 @@ async function addNewTree(e) {
   options.reload();
 }
 
+async function deleteTree() {
+  const name = deleteTreeOption.dataset.name;
+
+  await dialog.deleteFile(name);
+  options.reload()
+}
+
 newTree.addEventListener("click", toggleModal);
 exitModal.addEventListener("click", toggleModal);
 form.addEventListener("submit", addNewTree);
+deleteTreeOption.addEventListener("click", deleteTree)
