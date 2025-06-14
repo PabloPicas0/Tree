@@ -1,11 +1,13 @@
 import { app, ipcMain } from "electron";
 
-import filePing from "./src/Node/pings/FilePing.js";
+import loadFilePing from "./src/Node/pings/loadFilePing.js";
 import initTrees from "./src/Node/pings/initTreesPing.js";
 import createWindow from "./src/Window/createWindow.js";
+import deleteFilePing from "./src/Node/pings/deleteFilePing.js";
 
 function handlePings() {
-  ipcMain.handle("file", filePing);
+  ipcMain.handle("loadFile", loadFilePing);
+  ipcMain.handle("deleteFile", deleteFilePing);
   ipcMain.handle("initTrees", initTrees);
 }
 
