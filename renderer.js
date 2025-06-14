@@ -1,43 +1,5 @@
-import TreesEngine from "./src/Window/OptionsEngine.js";
+import Trees from "./src/Window/OptionsFrontend.js";
 
-const modal = document.querySelector(".modal");
-const newTree = document.querySelector(".new-tree");
-const form = document.querySelector(".file-picker");
-const exitModal = document.querySelector(".exit-modal");
-const deleteTreeOption = document.querySelector(".delete");
+const deleteTreeBtn = document.querySelector(".delete");
 
-const options = new TreesEngine(deleteTreeOption);
-
-function toggleModal() {
-  modal.classList.toggle("modal-off");
-  document.querySelector("#tree-name").value = "";
-}
-
-async function addNewTree(e) {
-  e.preventDefault();
-
-  const data = new FormData(form);
-  const name = data.get("name").trim();
-
-  if (name === "") {
-    toggleModal();
-    return;
-  }
-
-  await dialog.loadFile(name);
-
-  toggleModal();
-  options.reload();
-}
-
-async function deleteTree() {
-  const name = deleteTreeOption.dataset.name;
-
-  await dialog.deleteFile(name);
-  options.reload()
-}
-
-newTree.addEventListener("click", toggleModal);
-exitModal.addEventListener("click", toggleModal);
-form.addEventListener("submit", addNewTree);
-deleteTreeOption.addEventListener("click", deleteTree)
+const trees = new Trees(deleteTreeBtn);
