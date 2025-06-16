@@ -5,7 +5,7 @@ class TreesEngine {
   }
 
   async loadTreesFromDisc() {
-    const trees = (await dialog.initTrees()).map((tree) => JSON.parse(tree));
+    const trees = (await fileHandler.initTrees()).map((tree) => JSON.parse(tree));
     return trees;
   }
 
