@@ -3,17 +3,16 @@ import fs from "node:fs/promises";
 // const filters = [{ name: "tree", extensions: ["json"] }];
 
 // TODO: add error when operation failed
-async function loadFilePing(e, name) {
+async function createFilePing(e, name, photoPath) {
   const activeTrees = await fs.readdir("./trees");
   const fileNameExists = activeTrees.some((fileName) => fileName === `${name}.json`);
 
   if (fileNameExists) return;
 
-  const saveFilePath = `./trees/${name}.json`
-
+  const saveFilePath = `./trees/${name}.json`;
   const newFileContent = {
     name,
-    image: "",
+    image: photoPath === "" ? "" : photoPath,
     options: {},
     tree: {},
   };
@@ -22,4 +21,4 @@ async function loadFilePing(e, name) {
   return await fs.writeFile(saveFilePath, initial, "utf-8");
 }
 
-export default loadFilePing;
+export default createFilePing;
