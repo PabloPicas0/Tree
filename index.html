@@ -17,6 +17,10 @@
 
     <div class="options">
       <div class="current-option">
+        <button class="option photo" data-name="" title="Delete tree">Edit current tree</button>
+      </div>
+
+      <div class="current-option">
         <button class="option delete" data-name="" title="Delete tree">Delete current tree</button>
       </div>
     </div>
@@ -27,12 +31,12 @@
 
     <div class="modal modal-off">
       <form class="file-picker">
-        <!-- <div class="file-picker-content">
-          <label for="file">Pick File</label>
-          <input type="file" id="file" />
-        </div> -->
-
         <button type="button" class="exit-modal">X</button>
+
+        <div class="file-picker-content">
+          <label for="photo" class="tree-name">Pick picture</label>
+          <input type="button" name="photo" id="photo" value="Pick file"/>
+        </div>
 
         <div style="margin-top: 1rem">
           <div class="file-picker-content">
