@@ -1,6 +1,6 @@
 import { dialog } from "electron";
 
-const filters = [{ name: "Images", extensions: ["jpg", "png", "gif"] }];
+const filters = [{ name: "Images", extensions: ["jpg", "png", "gif", "svg"] }];
 
 async function openFilePathDialogPing() {
   const path = await dialog.showOpenDialog({ filters: filters, properties: ["openFile"] });
