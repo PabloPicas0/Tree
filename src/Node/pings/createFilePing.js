@@ -1,24 +1,37 @@
-import fs from "node:fs/promises";
+import { readdir, writeFile, readFile } from "node:fs/promises";
 
 // const filters = [{ name: "tree", extensions: ["json"] }];
 
 // TODO: add error when operation failed
 async function createFilePing(e, name, photoPath) {
-  const activeTrees = await fs.readdir("./trees");
+  const activeTrees = await readdir("./trees");
   const fileNameExists = activeTrees.some((fileName) => fileName === `${name}.json`);
+  const isNotPhotoIncluded = photoPath === "";
 
   if (fileNameExists) return;
 
+  const photoName = photoPath.split("\\").at(-1);
+  const savedPhotoPath = isNotPhotoIncluded ? "./assets/default_user.svg" : `./assets/${photoName}`;
   const saveFilePath = `./trees/${name}.json`;
+
   const newFileContent = {
     name,
-    image: photoPath === "" ? "" : photoPath,
+    image: savedPhotoPath,
     options: {},
     tree: {},
   };
+
   const initial = JSON.stringify(newFileContent);
 
-  return await fs.writeFile(saveFilePath, initial, "utf-8");
+  if (!isNotPhotoIncluded)
+    return await Promise.all([writeFile(saveFilePath, initial, "utf-8"), copyImage(photoPath, savedPhotoPath)]);
+
+  return await writeFile(saveFilePath, initial, "utf-8");
+}
+
+async function copyImage(pathToRead, pathToWrite) {
+  const image = await readFile(pathToRead);
+  await writeFile(pathToWrite, image, { flag: "ax" });
 }
 
 export default createFilePing;
