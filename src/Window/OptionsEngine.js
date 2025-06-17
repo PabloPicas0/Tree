@@ -12,11 +12,12 @@ class TreesEngine {
   async reload() {
     // Trees might be needed in constructor
     const newTrees = await this.loadTreesFromDisc();
-
+    
+    this.destroyTrees();
+    
     // TODO: add error boundry
     if (!newTrees.length) return;
 
-    this.destroyTrees();
     this.drawToScreen(newTrees);
   }
 
@@ -28,7 +29,8 @@ class TreesEngine {
     const options = document.querySelector(".created-trees");
 
     this.deleteTreeOption.dataset.name = trees[0]?.name;
-
+    this.deleteTreeOption.dataset.image = trees[0]?.image
+    
     for (let i = 0; i < trees.length; ++i) {
       const div = document.createElement("div");
       const button = document.createElement("button");
@@ -45,6 +47,7 @@ class TreesEngine {
 
       button.addEventListener("click", () => {
         this.deleteTreeOption.dataset.name = tree.name;
+        this.deleteTreeOption.dataset.image = tree.image
       });
 
       button.append(image);
