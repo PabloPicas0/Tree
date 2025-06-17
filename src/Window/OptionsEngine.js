@@ -27,7 +27,7 @@ class TreesEngine {
   drawToScreen(trees) {
     const options = document.querySelector(".created-trees");
 
-    this.deleteTreeOption.dataset.name = trees[0]?.name
+    this.deleteTreeOption.dataset.name = trees[0]?.name;
 
     for (let i = 0; i < trees.length; ++i) {
       const div = document.createElement("div");
@@ -38,7 +38,7 @@ class TreesEngine {
 
       p.textContent = tree.name;
       p.style.wordBreak = "break-word";
-      image.src = "./assets/default_user.svg";
+      image.src = tree.image
 
       div.classList.add("current-tree");
       button.classList.add("new-tree");
