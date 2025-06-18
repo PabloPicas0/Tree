@@ -10,8 +10,8 @@ async function createFilePing(e, name, photoPath) {
 
   if (fileNameExists) return;
 
-  const photoName = photoPath.split("\\").at(-1);
-  const savedPhotoPath = isNotPhotoIncluded ? "./assets/default_user.svg" : `./assets/${photoName}`;
+  const imageExtension = photoPath.split(".").at(-1);
+  const savedPhotoPath = isNotPhotoIncluded ? "./assets/default_user.svg" : `./assets/${name}.${imageExtension}`;
   const saveFilePath = `./trees/${name}.json`;
 
   const newFileContent = {
@@ -31,7 +31,7 @@ async function createFilePing(e, name, photoPath) {
 
 async function copyImage(pathToRead, pathToWrite) {
   const image = await readFile(pathToRead);
-  await writeFile(pathToWrite, image, { flag: "ax" });
+  await writeFile(pathToWrite, image);
 }
 
 export default createFilePing;
