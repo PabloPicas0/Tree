@@ -1,6 +1,11 @@
 class TreesEngine {
-  constructor(deleteTreeOption) {
-    this.deleteTreeOption = deleteTreeOption;
+  constructor() {
+    this.state = {
+      name: "",
+      image: "",
+      isEditMode: false,
+    };
+
     this.loadTreesFromDisc().then(this.drawToScreen.bind(this));
   }
 
@@ -12,9 +17,9 @@ class TreesEngine {
   async reload() {
     // Trees might be needed in constructor
     const newTrees = await this.loadTreesFromDisc();
-    
+
     this.destroyTrees();
-    
+
     // TODO: add error boundry
     if (!newTrees.length) return;
 
@@ -28,9 +33,9 @@ class TreesEngine {
   drawToScreen(trees) {
     const options = document.querySelector(".created-trees");
 
-    this.deleteTreeOption.dataset.name = trees[0]?.name;
-    this.deleteTreeOption.dataset.image = trees[0]?.image
-    
+    this.state.name = trees[0]?.name || "";
+    this.state.image = trees[0]?.image || "";
+
     for (let i = 0; i < trees.length; ++i) {
       const div = document.createElement("div");
       const button = document.createElement("button");
@@ -40,14 +45,16 @@ class TreesEngine {
 
       p.textContent = tree.name;
       p.style.wordBreak = "break-word";
-      image.src = tree.image
+
+      // TODO: this will fail if image dont exist but path to it yes
+      image.src = tree.image;
 
       div.classList.add("current-tree");
       button.classList.add("new-tree");
 
       button.addEventListener("click", () => {
-        this.deleteTreeOption.dataset.name = tree.name;
-        this.deleteTreeOption.dataset.image = tree.image
+        this.state.name = tree.name;
+        this.state.image = tree.image;
       });
 
       button.append(image);
