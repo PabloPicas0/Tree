@@ -5,12 +5,13 @@ import initTrees from "./src/Node/pings/initTreesPing.js";
 import createWindow from "./src/Window/createWindow.js";
 import deleteFilePing from "./src/Node/pings/deleteFilePing.js";
 import openFilePathDialogPing from "./src/Node/pings/openFilePathDialogPing.js";
+import updateFilePing from "./src/Node/pings/updateFilePing.js";
 
 function handlePings() {
   ipcMain.handle("initTrees", initTrees);
   ipcMain.handle("createFile", createFilePing);
   ipcMain.handle("deleteFile", deleteFilePing);
-  // ipcMain.handle("updateFile", updateFilePing)
+  ipcMain.handle("updateFile", updateFilePing)
   ipcMain.handle("openFilePathDialog", openFilePathDialogPing);
 }
 
