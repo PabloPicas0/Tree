@@ -1,11 +1,8 @@
 import { rm, readdir, readFile } from "node:fs/promises";
 
-const defaultUser = "./assets/default_user.svg";
-
-async function deleteFilePing(e, name, imageToDelete) {
+async function deleteFilePing(e, name) {
   const activeTrees = await readdir("./trees");
   const fileNameExists = activeTrees.some((fileName) => fileName === `${name}.json`);
-  const isDefaultImage = imageToDelete === defaultUser;
 
   // If name in file content is different than file name scan files to find that name
   if (!fileNameExists) {
@@ -16,12 +13,7 @@ async function deleteFilePing(e, name, imageToDelete) {
 
     for (let i = 0; i < filesContent.length; ++i) {
       if (filesContent[i].name === name) {
-        if (isDefaultImage) {
-          await rm(paths[i]);
-          return;
-        }
-
-        await Promise.all(rm(paths[i]), rm(imageToDelete));
+        await rm(paths[i]);
         return;
       }
     }
@@ -32,12 +24,8 @@ async function deleteFilePing(e, name, imageToDelete) {
 
   const fileToDelete = `./trees/${name}.json`;
 
-  if (isDefaultImage) {
-    await rm(fileToDelete);
-    return;
-  }
-
-  await Promise.all([rm(fileToDelete), rm(imageToDelete)]);
+  await rm(fileToDelete);
+  return;
 }
 
 export default deleteFilePing;
