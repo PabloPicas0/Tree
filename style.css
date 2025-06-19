@@ -31,6 +31,10 @@ p {
   background-color: #2c2d31;
 }
 
+.current-option {
+  margin-bottom: 1rem;
+}
+
 .option {
   width: 100%;
   background-color: #80808080;
@@ -81,7 +85,7 @@ p {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(2px);
 }
 
 .modal-off {
@@ -89,16 +93,38 @@ p {
 }
 
 .file-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   text-align: end;
   border: 1px solid gray;
   border-radius: 10px;
   padding: 3rem;
   max-width: 500px;
   width: 100%;
+
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.exit-modal {
+  align-self: flex-end;
+  width: 25px;
+  height: 25px;
+  border-radius: 3px;
+  background-color: whitesmoke;
+  border-width: 1px;
+}
+
+.exit-modal:hover { 
+  border: 1px solid red;
 }
 
 .file-picker-content {
-  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
 }
@@ -124,4 +150,9 @@ div:has(> .save) {
   border: none;
   font-size: 1rem;
   cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.save:hover {
+  border-color: greenyellow;
 }
