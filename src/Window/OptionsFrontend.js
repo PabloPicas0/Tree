@@ -9,7 +9,7 @@ class Trees extends TreesEngine {
     this.exitModal = document.querySelector(".exit-modal");
     this.treeNameInput = document.querySelector("#tree-name");
     this.treePhotoInput = document.querySelector("#photo");
-    this.treePhotoLabel = document.querySelector(".picture");
+    this.treePhotoLabel = document.querySelector(".picture-name");
     this.deleteTreeOption = document.querySelector(".delete");
     this.editTreeOption = document.querySelector(".edit");
 
@@ -26,8 +26,10 @@ class Trees extends TreesEngine {
 
     if (!path) return;
     // this.treePhotoInput.value = this.treePhotoInput.textContent + " " + path;
+    const { textContent } = this.treePhotoLabel;
+
     this.treePhotoInput.dataset.path = path;
-    this.treePhotoLabel.textContent += " " + path;
+    this.treePhotoLabel.textContent = path.split("\\").at(-1)
   }
 
   async handleTree(e) {
@@ -60,7 +62,7 @@ class Trees extends TreesEngine {
   editTree() {
     this.toggleModal();
     this.treePhotoInput.dataset.path = this.state.image;
-    this.treePhotoLabel.textContent += " " + this.state.image;
+    this.treePhotoLabel.textContent = this.state.image.split(/\\|\//).at(-1);
     this.treeNameInput.value = this.state.name;
     this.state.isEditMode = true;
   }
@@ -68,7 +70,7 @@ class Trees extends TreesEngine {
   toggleModal() {
     this.modal.classList.toggle("modal-off");
     this.treeNameInput.value = "";
-    this.treePhotoLabel.textContent = this.treePhotoLabel.textContent.substring(0, 7);
+    this.treePhotoLabel.textContent = "";
     this.treePhotoInput.dataset.path = "";
     this.state.isEditMode = false;
   }
