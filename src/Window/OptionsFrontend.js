@@ -9,6 +9,7 @@ class Trees extends TreesEngine {
     this.exitModal = document.querySelector(".exit-modal");
     this.treeNameInput = document.querySelector("#tree-name");
     this.treePhotoInput = document.querySelector("#photo");
+    this.treePhotoLabel = document.querySelector(".picture");
     this.deleteTreeOption = document.querySelector(".delete");
     this.editTreeOption = document.querySelector(".edit");
 
@@ -17,7 +18,7 @@ class Trees extends TreesEngine {
     this.deleteTreeOption.addEventListener("click", this.deleteTree.bind(this));
     this.treePhotoInput.addEventListener("click", this.getPhotoPath.bind(this));
     this.editTreeOption.addEventListener("click", this.editTree.bind(this));
-    this.form.addEventListener("submit", this.addNewTree.bind(this));
+    this.form.addEventListener("submit", this.handleTree.bind(this));
   }
 
   async getPhotoPath() {
@@ -26,9 +27,10 @@ class Trees extends TreesEngine {
     if (!path) return;
     // this.treePhotoInput.value = this.treePhotoInput.textContent + " " + path;
     this.treePhotoInput.dataset.path = path;
+    this.treePhotoLabel.textContent += " " + path;
   }
 
-  async addNewTree(e) {
+  async handleTree(e) {
     e.preventDefault();
 
     const data = new FormData(this.form);
@@ -52,13 +54,13 @@ class Trees extends TreesEngine {
     const name = this.state.name;
 
     await fileHandler.deleteFile(name);
-
     super.reload();
   }
 
   editTree() {
     this.toggleModal();
     this.treePhotoInput.dataset.path = this.state.image;
+    this.treePhotoLabel.textContent += " " + this.state.image;
     this.treeNameInput.value = this.state.name;
     this.state.isEditMode = true;
   }
@@ -66,6 +68,7 @@ class Trees extends TreesEngine {
   toggleModal() {
     this.modal.classList.toggle("modal-off");
     this.treeNameInput.value = "";
+    this.treePhotoLabel.textContent = this.treePhotoLabel.textContent.substring(0, 7);
     this.treePhotoInput.dataset.path = "";
     this.state.isEditMode = false;
   }
