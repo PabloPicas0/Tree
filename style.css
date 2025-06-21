@@ -72,6 +72,20 @@ p {
   color: #b8b9bf;
 }
 
+.custom {
+  border: none;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  padding: 0;
+}
+
+.custom-image {
+  border-radius: 50%;
+  width: 45;
+  height: 45px;
+}
+
 .tree {
   width: 100%;
   padding: 0.5rem;
