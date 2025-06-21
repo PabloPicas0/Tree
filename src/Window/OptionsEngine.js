@@ -37,11 +37,15 @@ class TreesEngine {
     this.state.image = trees[0]?.image || "";
 
     for (let i = 0; i < trees.length; ++i) {
+      const tree = trees[i];
+      const isDefault = tree.image.includes("default_user");
+      const size = isDefault ? 25 : 45;
+      const style = isDefault ? ["null", "null"] : ["custom", "custom-image"];
+
       const div = document.createElement("div");
       const button = document.createElement("button");
       const p = document.createElement("p");
-      const image = new Image(25, 25);
-      const tree = trees[i];
+      const image = new Image(size, size);
 
       p.textContent = tree.name;
       p.style.wordBreak = "break-word";
@@ -50,7 +54,8 @@ class TreesEngine {
       image.src = tree.image;
 
       div.classList.add("current-tree");
-      button.classList.add("new-tree");
+      button.classList.add("new-tree", style[0]);
+      image.classList.add(style[1]);
 
       button.addEventListener("click", () => {
         this.state.name = tree.name;
