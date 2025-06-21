@@ -14,6 +14,18 @@ class TreesEngine {
     return trees;
   }
 
+  async deleteTreeFromDisc() {
+    await fileHandler.deleteFile(this.state.name);
+  }
+
+  async updateTreeFromDisc(name, photoPath) {
+    await fileHandler.updateFile({ fileName: this.state.name, name, image: photoPath });
+  }
+
+  async createFileToDisc(name, photoPath) {
+    await fileHandler.createFile(name, photoPath);
+  }
+
   async reload() {
     // Trees might be needed in constructor
     const newTrees = await this.loadTreesFromDisc();

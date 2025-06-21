@@ -25,11 +25,9 @@ class Trees extends TreesEngine {
     const path = await dialog.openFilePathDialog();
 
     if (!path) return;
-    // this.treePhotoInput.value = this.treePhotoInput.textContent + " " + path;
-    const { textContent } = this.treePhotoLabel;
 
     this.treePhotoInput.dataset.path = path;
-    this.treePhotoLabel.textContent = path.split("\\").at(-1)
+    this.treePhotoLabel.textContent = path.split("\\").at(-1);
   }
 
   async handleTree(e) {
@@ -45,17 +43,15 @@ class Trees extends TreesEngine {
     }
 
     this.state.isEditMode
-      ? await fileHandler.updateFile({ fileName: this.state.name, name, image: photoPath })
-      : await fileHandler.createFile(name, photoPath);
+      ? await super.updateTreeFromDisc(name, photoPath)
+      : await super.createFileToDisc(name, photoPath);
 
     this.toggleModal();
     super.reload();
   }
 
   async deleteTree() {
-    const name = this.state.name;
-
-    await fileHandler.deleteFile(name);
+    await super.deleteTreeFromDisc();
     super.reload();
   }
 
