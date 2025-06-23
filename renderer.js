@@ -1,5 +1,5 @@
-import Trees from "./src/Window/OptionsFrontend.js";
+import Options from "./src/Window/OptionsFrontend.js";
+import TreesEngine from "./src/Window/TreesEngine.js";
 
-const deleteTreeBtn = document.querySelector(".delete");
-
-const trees = new Trees(deleteTreeBtn);
+const options = new Options();
+const trees = new TreesEngine();
