@@ -1,6 +1,6 @@
-import TreesEngine from "./OptionsEngine.js";
+import OptionsEngine from "./OptionsEngine.js";
 
-class Trees extends TreesEngine {
+class Options extends OptionsEngine {
   constructor() {
     super();
     this.modal = document.querySelector(".modal");
@@ -72,4 +72,4 @@ class Trees extends TreesEngine {
   }
 }
 
-export default Trees;
+export default Options;

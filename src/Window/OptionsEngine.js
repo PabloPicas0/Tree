@@ -1,4 +1,4 @@
-class TreesEngine {
+class OptionsEngine {
   constructor() {
     this.state = {
       name: "",
@@ -82,4 +82,4 @@ class TreesEngine {
   }
 }
 
-export default TreesEngine;
+export default OptionsEngine;
