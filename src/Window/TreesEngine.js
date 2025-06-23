@@ -1,4 +1,4 @@
-const { select, scaleLinear, axisBottom, axisLeft } = d3;
+const { select, scaleLinear, axisBottom, axisLeft, tree } = d3;
 
 class TreesEngine {
   constructor() {
@@ -8,9 +8,36 @@ class TreesEngine {
     this.treeState = {
       ...this.getParentSize(),
       padding: 16,
+      data: {
+        name: "test",
+        children: [
+          { name: "test2", children: [] },
+          { name: "test3", children: [] },
+          { name: "test4", children: [] },
+          { name: "test5", children: [] },
+        ],
+      },
     };
 
-    this.createTreeGrid();
+    this.createGrid();
+
+    window.addEventListener("resize", this.resizeGrid.bind(this));
+  }
+
+  resizeGrid() {
+    const { height, width } = this.getParentSize();
+
+    this.treeState.height = height;
+    this.treeState.width = width;
+
+    this.destroyGrid();
+    this.createGrid();
+  }
+
+  destroyGrid() {
+    this.svg.selectAll("g").each(function () {
+      this.remove();
+    });
   }
 
   getParentSize() {
@@ -20,7 +47,7 @@ class TreesEngine {
     return { width: width - padding, height: height - padding };
   }
 
-  createTreeGrid() {
+  createGrid() {
     const { padding, height, width } = this.treeState;
 
     const x = scaleLinear([0, 10], [padding / 2, width]);
