@@ -1,6 +1,8 @@
+const { select, scaleLinear, axisBottom, axisLeft } = d3;
+
 class TreesEngine {
   constructor() {
-    this.tree = d3.select(".tree");
+    this.tree = select(".tree");
     this.svg = this.tree.append("svg").attr("id", "tree").attr("width", "100%").attr("height", "100%");
 
     this.treeState = {
@@ -19,20 +21,28 @@ class TreesEngine {
   }
 
   createTreeGrid() {
-    const x = d3.scaleLinear([0, 10], [this.treeState.padding / 2, this.treeState.width]);
-    const y = d3.scaleLinear([0, 10], [this.treeState.height - this.treeState.padding, 0]);
+    const { padding, height, width } = this.treeState;
+
+    const x = scaleLinear([0, 10], [padding / 2, width]);
+    const y = scaleLinear([0, 10], [height - padding, 0]);
+
+    function setColor(g) {
+      const color = "#757575";
+      g.select(".domain").attr("stroke", color);
+      g.selectAll(".tick").select("line").attr("stroke", color);
+    }
 
     this.svg
       .append("g")
-      .attr("transform", `translate(${-this.treeState.padding / 2}, ${this.treeState.height - this.treeState.padding})`)
+      .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
       .transition()
       .duration(750)
       .call(
-        d3
-          .axisBottom(x)
-          .tickSize(-this.treeState.height + this.treeState.padding)
+        axisBottom(x)
+          .tickSize(-height + padding)
           .tickFormat((d, i) => "")
-      );
+      )
+      .call(setColor);
 
     this.svg
       .append("g")
@@ -40,11 +50,11 @@ class TreesEngine {
       .transition()
       .duration(750)
       .call(
-        d3
-          .axisLeft(y)
-          .tickSize(-this.treeState.width + this.treeState.padding / 2)
+        axisLeft(y)
+          .tickSize(-width + padding / 2)
           .tickFormat((d, i) => "")
-      );
+      )
+      .call(setColor);
   }
 }
 
