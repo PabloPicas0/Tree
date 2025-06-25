@@ -113,7 +113,7 @@ class TreesEngine {
       .selectAll()
       .data(this.root.descendants())
       .join("g")
-      .attr("transform", (d) => `translate(${d.y},${d.x})`);
+      .attr("transform", (d) => `translate(${d.y},${d.x})`)
 
     node
       .append("circle")
@@ -138,6 +138,7 @@ class TreesEngine {
 
     this.destroyGrid();
     this.createGrid();
+    this.createTree()
   }
 
   destroyGrid() {
@@ -168,8 +169,6 @@ class TreesEngine {
     this.svg
       .append("g")
       .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
-      .transition()
-      .duration(750)
       .call(
         axisBottom(x)
           .tickSize(-height + padding)
@@ -180,8 +179,6 @@ class TreesEngine {
     this.svg
       .append("g")
       .attr("transform", `translate(0, 0)`)
-      .transition()
-      .duration(750)
       .call(
         axisLeft(y)
           .tickSize(-width + padding / 2)
