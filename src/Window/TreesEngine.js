@@ -1,6 +1,8 @@
 // Links:
 // https://observablehq.com/@d3/tree/2#data
 
+import { BigTree } from "./dummyData";
+
 const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link } = d3;
 
 // NOTE: start with oldest known person 
@@ -14,136 +16,7 @@ class TreesEngine {
     this.treeState = {
       ...this.getParentSize(),
       padding: 16,
-      data: {
-        name: "Me",
-        children: [
-          {
-            name: "Mom",
-            children: [
-              {
-                name: "Grandmother (Mom's side)",
-                children: [
-                  {
-                    name: "Great-Grandmother",
-                    children: [
-                      {
-                        name: "2x Great-Grandmother",
-                        children: [
-                          {
-                            name: "3x Great-Grandmother",
-                            children: [
-                              {
-                                name: "4x Great-Grandmother",
-                                children: [
-                                  { name: "5x Great-Grandmother", children: null },
-                                  { name: "5x Great-Grandfather", children: null },
-                                ],
-                              },
-                              {
-                                name: "4x Great-Grandfather",
-                                children: [
-                                  { name: "5x Great-Grandmother", children: null },
-                                  { name: "5x Great-Grandfather", children: null },
-                                ],
-                              },
-                            ],
-                          },
-                          {
-                            name: "3x Great-Grandfather",
-                            children: [
-                              { name: "4x Great-Grandmother", children: null },
-                              { name: "4x Great-Grandfather", children: null },
-                            ],
-                          },
-                        ],
-                      },
-                      {
-                        name: "2x Great-Grandfather",
-                        children: [
-                          { name: "3x Great-Grandmother", children: null },
-                          { name: "3x Great-Grandfather", children: null },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    name: "Great-Grandfather",
-                    children: [
-                      { name: "2x Great-Grandmother", children: null },
-                      { name: "2x Great-Grandfather", children: null },
-                    ],
-                  },
-                ],
-              },
-              {
-                name: "Grandfather (Mom's side)",
-                children: [
-                  { name: "Great-Grandmother", children: null },
-                  { name: "Great-Grandfather", children: null },
-                ],
-              },
-            ],
-          },
-          {
-            name: "Dad",
-            children: [
-              {
-                name: "Grandmother (Dad's side)",
-                children: [
-                  {
-                    name: "Great-Grandmother",
-                    children: [
-                      {
-                        name: "2x Great-Grandmother",
-                        children: [
-                          {
-                            name: "3x Great-Grandmother",
-                            children: [
-                              { name: "4x Great-Grandmother", children: null },
-                              { name: "4x Great-Grandfather", children: null },
-                            ],
-                          },
-                          {
-                            name: "3x Great-Grandfather",
-                            children: [
-                              { name: "4x Great-Grandmother", children: null },
-                              { name: "4x Great-Grandfather", children: null },
-                            ],
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                name: "Grandfather (Dad's side)",
-                children: [
-                  {
-                    name: "Great-Grandmother",
-                    children: [
-                      {
-                        name: "2x Great-Grandmother",
-                        children: [
-                          { name: "3x Great-Grandmother", children: null },
-                          { name: "3x Great-Grandfather", children: null },
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    name: "Great-Grandfather",
-                    children: [
-                      { name: "2x Great-Grandmother", children: null },
-                      { name: "2x Great-Grandfather", children: null },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      }
+      data: BigTree
     };
 
     this.createGrid();
