@@ -1,7 +1,7 @@
 // Links:
 // https://observablehq.com/@d3/tree/2#data
 
-import { BigTree } from "./dummyData";
+import { BigTree, smallTree } from "./dummyData.js";
 
 const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link } = d3;
 
