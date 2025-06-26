@@ -21,17 +21,65 @@ class TreesEngine {
             name: "Mom",
             children: [
               {
-                name: "grandmother",
+                name: "Grandmother (Mom's side)",
                 children: [
-                  { name: "grandpa2x", children: null },
-                  { name: "grandmother2x", children: null },
+                  {
+                    name: "Great-Grandmother",
+                    children: [
+                      {
+                        name: "2x Great-Grandmother",
+                        children: [
+                          {
+                            name: "3x Great-Grandmother",
+                            children: [
+                              {
+                                name: "4x Great-Grandmother",
+                                children: [
+                                  { name: "5x Great-Grandmother", children: null },
+                                  { name: "5x Great-Grandfather", children: null },
+                                ],
+                              },
+                              {
+                                name: "4x Great-Grandfather",
+                                children: [
+                                  { name: "5x Great-Grandmother", children: null },
+                                  { name: "5x Great-Grandfather", children: null },
+                                ],
+                              },
+                            ],
+                          },
+                          {
+                            name: "3x Great-Grandfather",
+                            children: [
+                              { name: "4x Great-Grandmother", children: null },
+                              { name: "4x Great-Grandfather", children: null },
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        name: "2x Great-Grandfather",
+                        children: [
+                          { name: "3x Great-Grandmother", children: null },
+                          { name: "3x Great-Grandfather", children: null },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    name: "Great-Grandfather",
+                    children: [
+                      { name: "2x Great-Grandmother", children: null },
+                      { name: "2x Great-Grandfather", children: null },
+                    ],
+                  },
                 ],
               },
               {
-                name: "grandpa",
+                name: "Grandfather (Mom's side)",
                 children: [
-                  { name: "grandpa2x", children: null },
-                  { name: "grandmother2x", children: null },
+                  { name: "Great-Grandmother", children: null },
+                  { name: "Great-Grandfather", children: null },
                 ],
               },
             ],
@@ -40,44 +88,63 @@ class TreesEngine {
             name: "Dad",
             children: [
               {
-                name: "grandmother",
+                name: "Grandmother (Dad's side)",
                 children: [
-                  { name: "grandpa2x", children: null },
-                  { name: "grandmother2x", children: null },
+                  {
+                    name: "Great-Grandmother",
+                    children: [
+                      {
+                        name: "2x Great-Grandmother",
+                        children: [
+                          {
+                            name: "3x Great-Grandmother",
+                            children: [
+                              { name: "4x Great-Grandmother", children: null },
+                              { name: "4x Great-Grandfather", children: null },
+                            ],
+                          },
+                          {
+                            name: "3x Great-Grandfather",
+                            children: [
+                              { name: "4x Great-Grandmother", children: null },
+                              { name: "4x Great-Grandfather", children: null },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
                 ],
               },
               {
-                name: "grandpa2x",
+                name: "Grandfather (Dad's side)",
                 children: [
-                  { name: "grandpa2x", children: null },
-                  { name: "grandmother2x", children: null },
+                  {
+                    name: "Great-Grandmother",
+                    children: [
+                      {
+                        name: "2x Great-Grandmother",
+                        children: [
+                          { name: "3x Great-Grandmother", children: null },
+                          { name: "3x Great-Grandfather", children: null },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    name: "Great-Grandfather",
+                    children: [
+                      { name: "2x Great-Grandmother", children: null },
+                      { name: "2x Great-Grandfather", children: null },
+                    ],
+                  },
                 ],
               },
             ],
           },
         ],
-      },
+      }
     };
-
-    this.root = hierarchy(this.treeState.data);
-
-    this.dx = 35;
-    this.dy = this.treeState.width / (this.root.height + 1);
-    this.x0 = Infinity;
-    this.x1 = -Infinity;
-
-    this.tree = tree().nodeSize([this.dx, this.dy]);
-
-    this.root.sort((a, b) => ascending(a.data.name, b.data.name));
-
-    this.tree(this.root);
-
-    this.root.each((descendant) => {
-      if (descendant.x > this.x1) this.x1 = descendant.x;
-      if (descendant.x < this.x0) this.x0 = descendant.x;
-    });
-
-    this.height = this.x1 - this.x0 + this.dx * 2;
 
     this.createGrid();
     this.createTree();
@@ -86,9 +153,29 @@ class TreesEngine {
   }
 
   createTree() {
-    // this.svg.attr("viewBox", [-this.dy / 3, this.x0 - this.dx, this.treeState.width, this.height]);
+    const root = hierarchy(this.treeState.data);
+
+    const dx = 35;
+    const dy = this.treeState.width / (root.height + 1);
+    let x0 = Infinity;
+    let x1 = -Infinity;
+
+    const treeConstuctor = tree().nodeSize([dx, dy]);
+
+    root.sort((a, b) => ascending(a.data.name, b.data.name));
+
+    treeConstuctor(root);
+
+    root.each((descendant) => {
+      if (descendant.x > x1) x1 = descendant.x;
+      if (descendant.x < x0) x0 = descendant.x;
+    });
+
+    const height = x1 - x0 + dx * 2;
+    const width = x1 - x0 + dy * 2
+    // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
     const [xMid, yMid] = [this.treeState.width / 2, this.treeState.height / 2];
-    const container = this.svg.append("g").attr("transform", `translate(${83}, ${yMid})`);
+    const container = this.svg.append("g").attr("transform", `translate(${80}, ${yMid})`);
 
     container
       .append("g")
@@ -97,7 +184,7 @@ class TreesEngine {
       .attr("stroke-opacity", 0.7)
       .attr("stroke-width", 1.5)
       .selectAll()
-      .data(this.root.links())
+      .data(root.links())
       .join("path")
       .attr(
         "d",
@@ -105,13 +192,14 @@ class TreesEngine {
           .x((d) => d.y)
           .y((d) => d.x)
       );
+      
 
     const node = container
       .append("g")
       .attr("stroke-linejoin", "miter")
       .attr("stroke-width", 3)
       .selectAll()
-      .data(this.root.descendants())
+      .data(root.descendants())
       .join("g")
       .attr("transform", (d) => `translate(${d.y},${d.x})`)
 
@@ -142,9 +230,7 @@ class TreesEngine {
   }
 
   destroyGrid() {
-    this.svg.selectAll("g").each(function () {
-      this.remove();
-    });
+    this.svg.selectAll("g").remove()
   }
 
   getParentSize() {
