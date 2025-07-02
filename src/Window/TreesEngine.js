@@ -3,11 +3,10 @@
 
 import { BigTree, smallTree } from "./dummyData.js";
 
-const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link } = d3;
+const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link, zoom } = d3;
 
-// NOTE: start with oldest known person 
-// TODO: resize don't work on tree
-// TODO: trees need to be adjusted to svg
+// NOTE: start with oldest known person
+// TODO: Refactor entire class to use enter, update, exit pattern
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
@@ -16,13 +15,30 @@ class TreesEngine {
     this.treeState = {
       ...this.getParentSize(),
       padding: 16,
-      data: BigTree
+      data: BigTree,
     };
 
     this.createGrid();
     this.createTree();
 
+    this.zoomHandler = zoom()
+      .scaleExtent([-1e100, 1e100])
+      .translateExtent([
+        [-1e100, -1e100],
+        [1e100, 1e100],
+      ]);
+
     window.addEventListener("resize", this.resizeGrid.bind(this));
+  }
+
+  zoomed(event, x, y, xAxis, yAxis, gx, gy) {
+    console.log(event);
+    const { rescaleX, rescaleY } = event.transform;
+    const sx = rescaleX(x);
+    const sy = rescaleY(y);
+
+    gx.call(xAxis.scale(sx));
+    gy.call(yAxis.scale(sy));
   }
 
   createTree() {
@@ -44,11 +60,11 @@ class TreesEngine {
       if (descendant.x < x0) x0 = descendant.x;
     });
 
-    const height = x1 - x0 + dx * 2;
-    const width = x1 - x0 + dy * 2
+    // const height = x1 - x0 + dx * 2;
+    // const width = x1 - x0 + dy * 2;
     // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
     const [xMid, yMid] = [this.treeState.width / 2, this.treeState.height / 2];
-    const container = this.svg.append("g").attr("transform", `translate(${80}, ${yMid})`);
+    const container = this.svg.append("g").attr("transform", `translate(${80}, ${yMid}), scale(0.7)`);
 
     container
       .append("g")
@@ -65,7 +81,6 @@ class TreesEngine {
           .x((d) => d.y)
           .y((d) => d.x)
       );
-      
 
     const node = container
       .append("g")
@@ -74,12 +89,9 @@ class TreesEngine {
       .selectAll()
       .data(root.descendants())
       .join("g")
-      .attr("transform", (d) => `translate(${d.y},${d.x})`)
+      .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
-    node
-      .append("circle")
-      .attr("fill", "#fff")
-      .attr("r", 2.5);
+    node.append("circle").attr("fill", "#fff").attr("r", 2.5);
 
     node
       .append("text")
@@ -99,11 +111,11 @@ class TreesEngine {
 
     this.destroyGrid();
     this.createGrid();
-    this.createTree()
+    this.createTree();
   }
 
   destroyGrid() {
-    this.svg.selectAll("g").remove()
+    this.svg.selectAll("g").remove();
   }
 
   getParentSize() {
@@ -119,31 +131,44 @@ class TreesEngine {
     const x = scaleLinear([0, 10], [padding / 2, width]);
     const y = scaleLinear([0, 10], [height - padding, 0]);
 
+    const xAxis = axisBottom(x)
+      .tickSize(-height + padding)
+      .tickFormat((d, i) => "");
+
+    const yAxis = axisLeft(y)
+      .tickSize(-width + padding / 2)
+      .tickFormat((d, i) => "");
+
     function setColor(g) {
       const color = "#757575";
       g.select(".domain").attr("stroke", color);
       g.selectAll(".tick").select("line").attr("stroke", color);
     }
 
-    this.svg
+    const gx = this.svg
       .append("g")
       .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
-      .call(
-        axisBottom(x)
-          .tickSize(-height + padding)
-          .tickFormat((d, i) => "")
-      )
+      .call(xAxis)
       .call(setColor);
 
-    this.svg
-      .append("g")
-      .attr("transform", `translate(0, 0)`)
-      .call(
-        axisLeft(y)
-          .tickSize(-width + padding / 2)
-          .tickFormat((d, i) => "")
-      )
-      .call(setColor);
+    const gy = this.svg.append("g").attr("transform", `translate(0, 0)`).call(yAxis).call(setColor);
+    
+    const zoomHandler = zoom()
+      .scaleExtent([-1e100, 1e100])
+      .translateExtent([
+        [-1e100, -1e100],
+        [1e100, 1e100],
+      ])
+      .on("zoom",  (event) => {
+        const t = event.transform;
+        const sx = t.rescaleX(x);
+        const sy = t.rescaleY(x);
+
+        gx.call(xAxis.scale(sx));
+        gy.call(yAxis.scale(sy));
+      });
+
+    this.svg.call(zoomHandler);
   }
 }
 
