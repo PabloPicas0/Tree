@@ -11,12 +11,12 @@ function handlePings() {
   ipcMain.handle("initTrees", initTrees);
   ipcMain.handle("createFile", createFilePing);
   ipcMain.handle("deleteFile", deleteFilePing);
-  ipcMain.handle("updateFile", updateFilePing)
+  ipcMain.handle("updateFile", updateFilePing);
   ipcMain.handle("openFilePathDialog", openFilePathDialogPing);
 }
 
 app.whenReady().then(() => {
-  createWindow()
+  createWindow();
   handlePings();
 });
 
