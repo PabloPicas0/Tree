@@ -162,10 +162,10 @@ class TreesEngine {
       .on("zoom",  (event) => {
         const t = event.transform;
         const sx = t.rescaleX(x);
-        const sy = t.rescaleY(x);
+        const sy = t.rescaleY(y);
 
-        gx.call(xAxis.scale(sx));
-        gy.call(yAxis.scale(sy));
+        gx.call(xAxis.scale(sx)).call(setColor);
+        gy.call(yAxis.scale(sy)).call(setColor);
       });
 
     this.svg.call(zoomHandler);
