@@ -6,7 +6,8 @@ import { BigTree, smallTree } from "./dummyData.js";
 const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link, zoom } = d3;
 
 // NOTE: start with oldest known person
-// TODO: Refactor entire class to use enter, update, exit pattern
+// TODO: on resize scale is reseted
+// TODO: overflow when scrolling around
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
@@ -21,30 +22,17 @@ class TreesEngine {
     this.createGrid();
     this.createTree();
 
-    this.zoomHandler = zoom()
-      .scaleExtent([-1e100, 1e100])
-      .translateExtent([
-        [-1e100, -1e100],
-        [1e100, 1e100],
-      ]);
+    // This need to be set after function calls
+    // Because functions create elements that are selectable 
+    this.treeContainer = select(".tree-container");
 
     window.addEventListener("resize", this.resizeGrid.bind(this));
-  }
-
-  zoomed(event, x, y, xAxis, yAxis, gx, gy) {
-    console.log(event);
-    const { rescaleX, rescaleY } = event.transform;
-    const sx = rescaleX(x);
-    const sy = rescaleY(y);
-
-    gx.call(xAxis.scale(sx));
-    gy.call(yAxis.scale(sy));
   }
 
   createTree() {
     const root = hierarchy(this.treeState.data);
 
-    const dx = 35;
+    const dx = 50;
     const dy = this.treeState.width / (root.height + 1);
     let x0 = Infinity;
     let x1 = -Infinity;
@@ -64,7 +52,7 @@ class TreesEngine {
     // const width = x1 - x0 + dy * 2;
     // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
     const [xMid, yMid] = [this.treeState.width / 2, this.treeState.height / 2];
-    const container = this.svg.append("g").attr("transform", `translate(${80}, ${yMid}), scale(0.7)`);
+    const container = this.svg.append("g").attr("class", "tree-container").attr("transform", `translate(${80}, ${yMid})`);
 
     container
       .append("g")
@@ -112,6 +100,10 @@ class TreesEngine {
     this.destroyGrid();
     this.createGrid();
     this.createTree();
+
+    // After redraw node needs to be updated 
+    // To this currently on screen
+    this.treeContainer = select(".tree-container");
   }
 
   destroyGrid() {
@@ -139,12 +131,6 @@ class TreesEngine {
       .tickSize(-width + padding / 2)
       .tickFormat((d, i) => "");
 
-    function setColor(g) {
-      const color = "#757575";
-      g.select(".domain").attr("stroke", color);
-      g.selectAll(".tick").select("line").attr("stroke", color);
-    }
-
     const gx = this.svg
       .append("g")
       .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
@@ -152,23 +138,34 @@ class TreesEngine {
       .call(setColor);
 
     const gy = this.svg.append("g").attr("transform", `translate(0, 0)`).call(yAxis).call(setColor);
-    
+
     const zoomHandler = zoom()
       .scaleExtent([-1e100, 1e100])
       .translateExtent([
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      .on("zoom",  (event) => {
-        const t = event.transform;
-        const sx = t.rescaleX(x);
-        const sy = t.rescaleY(y);
-
-        gx.call(xAxis.scale(sx)).call(setColor);
-        gy.call(yAxis.scale(sy)).call(setColor);
-      });
+      .on("zoom", zoomed.bind(this));
 
     this.svg.call(zoomHandler);
+
+    const yMid = this.treeState.height / 2;
+ 
+    function zoomed(event) {
+      const t = event.transform;
+      const sx = t.rescaleX(x);
+      const sy = t.rescaleY(y);
+      
+      this.treeContainer.attr("transform", `translate(${80 + t.x}, ${yMid + t.y}), scale(${t.k})`);
+      gx.call(xAxis.scale(sx)).call(setColor);
+      gy.call(yAxis.scale(sy)).call(setColor);
+    }
+
+    function setColor(g) {
+      const color = "#757575";
+      g.select(".domain").attr("stroke", color);
+      g.selectAll(".tick").select("line").attr("stroke", color);
+    }
   }
 }
 
