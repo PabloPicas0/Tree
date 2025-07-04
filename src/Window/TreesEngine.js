@@ -7,17 +7,18 @@ const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, c
 
 // NOTE: start with oldest known person
 // TODO: on resize scale is reseted
-// TODO: overflow when scrolling around
+// TODO: When scoll move to pointer position
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
-    this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", "100%").attr("height", "100%");
 
     this.treeState = {
       ...this.getParentSize(),
       padding: 16,
       data: BigTree,
     };
+
+    this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `calc(100% - ${this.treeState.padding / 2 - 1}px)`).attr("height", `calc(100% - ${this.treeState.padding - 1}px)`);
 
     this.createGrid();
     this.createTree();
