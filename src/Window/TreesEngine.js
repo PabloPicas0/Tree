@@ -7,18 +7,17 @@ const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, c
 
 // NOTE: start with oldest known person
 // TODO: on resize scale is reseted
-// TODO: When scoll move to pointer position
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
 
     this.treeState = {
       ...this.getParentSize(),
-      padding: 16,
+      padding: 2,
       data: BigTree,
     };
 
-    this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `calc(100% - ${this.treeState.padding / 2 - 1}px)`).attr("height", `calc(100% - ${this.treeState.padding - 1}px)`);
+    this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
 
     this.createGrid();
     this.createTree();
@@ -156,7 +155,7 @@ class TreesEngine {
       const t = event.transform;
       const sx = t.rescaleX(x);
       const sy = t.rescaleY(y);
-      
+      console.log(event)
       this.treeContainer.attr("transform", `translate(${80 + t.x}, ${yMid + t.y}), scale(${t.k})`);
       gx.call(xAxis.scale(sx)).call(setColor);
       gy.call(yAxis.scale(sy)).call(setColor);
