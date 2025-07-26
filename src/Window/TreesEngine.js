@@ -3,7 +3,8 @@
 
 import { BigTree, smallTree } from "./dummyData.js";
 
-const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link, zoom } = d3;
+const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity } =
+  d3;
 
 // NOTE: start with oldest known person
 // TODO: on resize scale is reseted
@@ -14,6 +15,7 @@ class TreesEngine {
     this.treeState = {
       ...this.getParentSize(),
       padding: 2,
+      lastTransform: null,
       data: BigTree,
     };
 
@@ -23,7 +25,7 @@ class TreesEngine {
     this.createTree();
 
     // This need to be set after function calls
-    // Because functions create elements that are selectable 
+    // Because functions create elements that are selectable
     this.treeContainer = select(".tree-container");
 
     window.addEventListener("resize", this.resizeGrid.bind(this));
@@ -51,8 +53,11 @@ class TreesEngine {
     // const height = x1 - x0 + dx * 2;
     // const width = x1 - x0 + dy * 2;
     // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
-    const [xMid, yMid] = [this.treeState.width / 2, this.treeState.height / 2];
-    const container = this.svg.append("g").attr("class", "tree-container").attr("transform", `translate(${80}, ${yMid})`);
+    const yMid = this.treeState.height / 2;
+    const container = this.svg
+      .append("g")
+      .attr("class", "tree-container")
+      .attr("transform", `translate(${80}, ${yMid})`);
 
     container
       .append("g")
@@ -97,11 +102,15 @@ class TreesEngine {
     this.treeState.height = height;
     this.treeState.width = width;
 
+    let { k, x, y } = this.treeState.lastTransform || { k: 1, x: 80, y: height / 2 };
+
+    this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
+
     this.destroyGrid();
     this.createGrid();
     this.createTree();
 
-    // After redraw node needs to be updated 
+    // After redraw node needs to be updated
     // To this currently on screen
     this.treeContainer = select(".tree-container");
   }
@@ -139,7 +148,7 @@ class TreesEngine {
 
     const gy = this.svg.append("g").attr("transform", `translate(0, 0)`).call(yAxis).call(setColor);
 
-    const zoomHandler = zoom()
+    this.zoomHandler = zoom()
       .scaleExtent([-1e100, 1e100])
       .translateExtent([
         [-1e100, -1e100],
@@ -147,16 +156,16 @@ class TreesEngine {
       ])
       .on("zoom", zoomed.bind(this));
 
-    this.svg.call(zoomHandler);
+    this.svg.call(this.zoomHandler);
 
-    const yMid = this.treeState.height / 2;
- 
     function zoomed(event) {
       const t = event.transform;
       const sx = t.rescaleX(x);
       const sy = t.rescaleY(y);
-      console.log(event)
-      this.treeContainer.attr("transform", `translate(${80 + t.x}, ${yMid + t.y}), scale(${t.k})`);
+
+      this.treeContainer.attr("transform", t);
+      this.treeState.lastTransform = t;
+
       gx.call(xAxis.scale(sx)).call(setColor);
       gy.call(yAxis.scale(sy)).call(setColor);
     }
