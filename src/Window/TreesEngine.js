@@ -8,18 +8,16 @@ const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, c
 
 // NOTE: start with oldest known person
 // TODO: on resize scale is reseted
-// TODO: add magic numbers like 80 or height / 2 to state as default x and y 
+// TODO: add magic numbers like 80 or height / 2 to state as default x and y
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
-
     this.treeState = {
       ...this.getParentSize(),
       padding: 2,
       treePosition: null,
       data: BigTree,
     };
-
     this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
     this.zoomHandler = zoom()
       .scaleExtent([-1e100, 1e100])
@@ -27,10 +25,15 @@ class TreesEngine {
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      
-    // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially
-    this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, 80, this.treeState.height / 2);
+      .on("start", function () {
+        this.style.cursor = "grabbing";
+      })
+      .on("end", function () {
+        this.style.cursor = "grab";
+      });
 
+    // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
+    this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, 80, this.treeState.height / 2);
     this.createGrid();
     this.createTree();
 
