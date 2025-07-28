@@ -25,11 +25,11 @@ class TreesEngine {
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      .on("start", function () {
-        this.style.cursor = "grabbing";
+      .on("start", function (e) {
+        if (e.sourceEvent?.type === "mousedown") this.style.cursor = "grabbing";
       })
-      .on("end", function () {
-        this.style.cursor = "grab";
+      .on("end", function (e) {
+        if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
       });
 
     // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
