@@ -8,7 +8,6 @@ const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, c
 
 // NOTE: start with oldest known person
 // TODO: on resize scale is reseted
-// TODO: add magic numbers like 80 or height / 2 to state as default x and y
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
@@ -33,7 +32,7 @@ class TreesEngine {
       });
 
     // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
-    this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, 80, this.treeState.height / 2);
+    this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, this.treeState.offsetX, this.treeState.offsetY);
     this.createGrid();
     this.createTree();
 
@@ -66,8 +65,10 @@ class TreesEngine {
     // const height = x1 - x0 + dx * 2;
     // const width = x1 - x0 + dy * 2;
     // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
-    const [x, y] = [80, this.treeState.height / 2];
-    const container = this.svg.append("g").attr("class", "tree-container").attr("transform", `translate(${x}, ${y})`);
+    const container = this.svg
+      .append("g")
+      .attr("class", "tree-container")
+      .attr("transform", `translate(${this.treeState.offsetX}, ${this.treeState.offsetY})`);
 
     container
       .append("g")
@@ -112,7 +113,7 @@ class TreesEngine {
     this.treeState.height = height;
     this.treeState.width = width;
 
-    let { k, x, y } = this.treeState.treePosition || { k: 1, x: 80, y: height / 2 };
+    let { k, x, y } = this.treeState.treePosition || { k: 1, x: this.treeState.offsetX, y: this.treeState.offsetY };
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
@@ -133,7 +134,7 @@ class TreesEngine {
     const { width, height } = this.treeElem.node().getBoundingClientRect();
     const padding = 8 * 2;
 
-    return { width: width - padding, height: height - padding };
+    return { width: width - padding, height: height - padding, offsetX: 80, offsetY: height / 2 };
   }
 
   createGrid() {
