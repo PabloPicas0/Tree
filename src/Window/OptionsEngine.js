@@ -3,6 +3,7 @@ class OptionsEngine {
     this.state = {
       name: "",
       image: "",
+      data: {},
       isEditMode: false,
     };
 
@@ -72,6 +73,7 @@ class OptionsEngine {
       button.addEventListener("click", () => {
         this.state.name = tree.name;
         this.state.image = tree.image;
+        this.state.data = tree.tree;
       });
 
       button.append(image);
