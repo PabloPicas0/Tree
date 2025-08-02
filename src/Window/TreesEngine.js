@@ -1,21 +1,17 @@
 // Links:
 // https://observablehq.com/@d3/tree/2#data
 
-import { BigTree, smallTree } from "./dummyData.js";
-
 const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity } =
   d3;
 
 // NOTE: start with oldest known person
-// TODO: on resize scale is reseted
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
     this.treeState = {
       ...this.getParentSize(),
       padding: 2,
-      treePosition: null,
-      data: BigTree,
+      lastUsedPosition: null,
     };
     this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
     this.zoomHandler = zoom()
@@ -34,17 +30,10 @@ class TreesEngine {
     // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
     this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, this.treeState.offsetX, this.treeState.offsetY);
     this.createGrid();
-    this.createTree();
-
-    // This need to be set after function calls
-    // Because functions create elements that are selectable
-    this.treeContainer = select(".tree-container");
-
-    window.addEventListener("resize", this.resizeGrid.bind(this));
   }
 
-  createTree() {
-    const root = hierarchy(this.treeState.data);
+  createTree(data) {
+    const root = hierarchy(data);
 
     const dx = 50;
     const dy = this.treeState.width / (root.height + 1);
@@ -65,12 +54,12 @@ class TreesEngine {
     // const height = x1 - x0 + dx * 2;
     // const width = x1 - x0 + dy * 2;
     // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
-    const container = this.svg
+    this.treeContainer = this.svg
       .append("g")
       .attr("class", "tree-container")
       .attr("transform", `translate(${this.treeState.offsetX}, ${this.treeState.offsetY})`);
 
-    container
+    this.treeContainer
       .append("g")
       .attr("fill", "none")
       .attr("stroke", "#fafafa")
@@ -86,7 +75,7 @@ class TreesEngine {
           .y((d) => d.x)
       );
 
-    const node = container
+    const node = this.treeContainer
       .append("g")
       .attr("stroke-linejoin", "miter")
       .attr("stroke-width", 3)
@@ -107,23 +96,19 @@ class TreesEngine {
       .attr("paint-order", "stroke");
   }
 
-  resizeGrid() {
+  reload(treeData) {
     const { height, width } = this.getParentSize();
 
     this.treeState.height = height;
     this.treeState.width = width;
 
-    let { k, x, y } = this.treeState.treePosition || { k: 1, x: this.treeState.offsetX, y: this.treeState.offsetY };
+    let { k, x, y } = this.treeState.lastUsedPosition || { k: 1, x: this.treeState.offsetX, y: this.treeState.offsetY };
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
     this.destroyGrid();
     this.createGrid();
-    this.createTree();
-
-    // After redraw node needs to be updated
-    // To this currently on screen
-    this.treeContainer = select(".tree-container");
+    this.createTree(treeData);
   }
 
   destroyGrid() {
