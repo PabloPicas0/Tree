@@ -1,8 +1,8 @@
 import OptionsEngine from "./OptionsEngine.js";
 
 class Options extends OptionsEngine {
-  constructor() {
-    super();
+  constructor(elem, event) {
+    super(elem, event);
     this.modal = document.querySelector(".modal");
     this.newTree = document.querySelector(".new-tree");
     this.form = document.querySelector(".file-picker");
