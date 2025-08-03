@@ -25,18 +25,18 @@ class TreesEngine {
       })
       .on("end", function (e) {
         if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
-      });
+      })
+      .on("zoom", this.zoomed.bind(this));
 
     // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
     this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, this.treeState.offsetX, this.treeState.offsetY);
-    this.createGrid();
   }
 
   createTree(data) {
     const root = hierarchy(data);
 
-    const dx = 50;
-    const dy = this.treeState.width / (root.height + 1);
+    const dx = 90;
+    const dy = (this.treeState.width + 500) / (root.height + 1);
     let x0 = Infinity;
     let x1 = -Infinity;
 
@@ -57,6 +57,7 @@ class TreesEngine {
     this.treeContainer = this.svg
       .append("g")
       .attr("class", "tree-container")
+      // FIX: On window resize this cause a bug where tree have default position instead of last known
       .attr("transform", `translate(${this.treeState.offsetX}, ${this.treeState.offsetY})`);
 
     this.treeContainer
@@ -84,12 +85,12 @@ class TreesEngine {
       .join("g")
       .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
-    node.append("circle").attr("fill", "#fff").attr("r", 2.5);
+    node.append("circle").attr("fill", "#fff").attr("r", 5);
 
     node
       .append("text")
-      .attr("dy", "0.31em")
-      .attr("x", (d) => (d.children ? -6 : 6))
+      .attr("dy", "1.31em")
+      .attr("x", (d) => (d.children ? 10 : -10))
       .attr("text-anchor", (d) => (d.children ? "end" : "start"))
       .text((d) => d.data.name)
       .attr("stroke", "white")
@@ -102,12 +103,11 @@ class TreesEngine {
     this.treeState.height = height;
     this.treeState.width = width;
 
-    let { k, x, y } = this.treeState.lastUsedPosition || { k: 1, x: this.treeState.offsetX, y: this.treeState.offsetY };
+    let { k, x, y } = this.treeState.lastUsedPosition
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
     this.destroyGrid();
-    this.createGrid();
     this.createTree(treeData);
   }
 
@@ -122,48 +122,61 @@ class TreesEngine {
     return { width: width - padding, height: height - padding, offsetX: 80, offsetY: height / 2 };
   }
 
-  createGrid() {
-    const { padding, height, width } = this.treeState;
+  zoomed(event) {
+    const { transform } = event;
 
-    const x = scaleLinear([0, 10], [padding / 2, width]);
-    const y = scaleLinear([0, 10], [height - padding, 0]);
-
-    const xAxis = axisBottom(x)
-      .tickSize(-height + padding)
-      .tickFormat((d, i) => "");
-
-    const yAxis = axisLeft(y)
-      .tickSize(-width + padding / 2)
-      .tickFormat((d, i) => "");
-
-    const gx = this.svg
-      .append("g")
-      .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
-      .call(xAxis)
-      .call(setColor);
-
-    const gy = this.svg.append("g").attr("transform", `translate(0, 0)`).call(yAxis).call(setColor);
-
-    this.zoomHandler.on("zoom", zoomed.bind(this));
-
-    function zoomed(event) {
-      const t = event.transform;
-      const sx = t.rescaleX(x);
-      const sy = t.rescaleY(y);
-
-      this.treeContainer.attr("transform", t);
-      this.treeState.treePosition = t;
-
-      gx.call(xAxis.scale(sx)).call(setColor);
-      gy.call(yAxis.scale(sy)).call(setColor);
-    }
-
-    function setColor(g) {
-      const color = "#757575";
-      g.select(".domain").attr("stroke", color);
-      g.selectAll(".tick").select("line").attr("stroke", color);
-    }
+    this.treeContainer?.attr("transform", transform);
+    this.treeState.lastUsedPosition = transform;
   }
+
+
+  // Might me usefull if future this enables grid creation
+  // It requires some changes in class to not cause a bugs
+
+  // createGrid() {
+  // const { padding, height, width } = this.treeState;
+
+  // const x = scaleLinear([0, 10], [padding / 2, width]);
+  // const y = scaleLinear([0, 10], [height - padding, 0]);
+
+  // const xAxis = axisBottom(x)
+  //   .tickSize(-height + padding)
+  //   .tickSizeInner(0)
+  //   .tickFormat((d, i) => "");
+
+  // const yAxis = axisLeft(y)
+  //   .tickSize(-width + padding / 2)
+  //   .tickSizeInner(0)
+  //   .tickFormat((d, i) => "");
+
+  // const gx = this.svg
+  //   .append("g")
+  //   .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
+  //   .call(xAxis)
+  //   .call(setColor);
+
+  // const gy = this.svg.append("g").attr("transform", `translate(0, 0)`).call(yAxis).call(setColor);
+
+  // this.zoomHandler.on("zoom", zoomed.bind(this));
+
+  // function zoomed(event) {
+  // const transform = event.transform;
+  // const sx = transform.rescaleX(x);
+  // const sy = transform.rescaleY(y);
+
+  // this.treeContainer.attr("transform", transform);
+  // this.treeState.treePosition = transform;
+
+  // gx.call(xAxis.scale(sx)).call(setColor);
+  // gy.call(yAxis.scale(sy)).call(setColor);
+  //}
+
+  //   function setColor(g) {
+  //     const color = "#757575";
+  //     g.select(".domain").attr("stroke", color);
+  //     g.selectAll(".tick").select("line").attr("stroke", color);
+  //   }
+  // }
 }
 
 export default TreesEngine;
