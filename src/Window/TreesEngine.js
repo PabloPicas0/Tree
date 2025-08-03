@@ -85,13 +85,13 @@ class TreesEngine {
       .join("g")
       .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
-    node.append("circle").attr("fill", "#fff").attr("r", 5);
+    node.append("circle").attr("fill", "#fff").attr("r", 15);
 
     node
       .append("text")
-      .attr("dy", "1.31em")
-      .attr("x", (d) => (d.children ? 10 : -10))
-      .attr("text-anchor", (d) => (d.children ? "end" : "start"))
+      .attr("dy", "2.31em")
+      .attr("x", 0)
+      .attr("text-anchor", "middle")
       .text((d) => d.data.name)
       .attr("stroke", "white")
       .attr("paint-order", "stroke");
