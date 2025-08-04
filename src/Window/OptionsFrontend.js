@@ -12,6 +12,8 @@ class Options extends OptionsEngine {
     this.treePhotoLabel = document.querySelector(".picture-name");
     this.deleteTreeOption = document.querySelector(".delete");
     this.editTreeOption = document.querySelector(".edit");
+    this.treeWidthSilider = document.querySelector("#x");
+    this.treeHeightSilider = document.querySelector("#y");
 
     this.newTree.addEventListener("click", this.toggleModal.bind(this));
     this.exitModal.addEventListener("click", this.toggleModal.bind(this));
