@@ -1,8 +1,7 @@
 // Links:
 // https://observablehq.com/@d3/tree/2#data
 
-const { select, scaleLinear, axisBottom, axisLeft, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity } =
-  d3;
+const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity } = d3;
 
 // NOTE: start with oldest known person
 class TreesEngine {
@@ -12,6 +11,8 @@ class TreesEngine {
       ...this.getParentSize(),
       padding: 2,
       lastUsedPosition: null,
+      additionalTreeHeight: 0,
+      additionalTreeWidth: 500,
     };
     this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
     this.zoomHandler = zoom()
@@ -20,12 +21,8 @@ class TreesEngine {
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      .on("start", function (e) {
-        if (e.sourceEvent?.type === "mousedown") this.style.cursor = "grabbing";
-      })
-      .on("end", function (e) {
-        if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
-      })
+      .on("start", this.zoomStartAndEnd)
+      .on("end", this.zoomStartAndEnd)
       .on("zoom", this.zoomed.bind(this));
 
     // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
@@ -35,10 +32,10 @@ class TreesEngine {
   createTree(data) {
     const root = hierarchy(data);
 
-    const dx = 90;
-    const dy = (this.treeState.width + 500) / (root.height + 1);
-    let x0 = Infinity;
-    let x1 = -Infinity;
+    const dx = 90 + this.treeState.additionalTreeHeight;
+    const dy = (this.treeState.width + this.treeState.additionalTreeWidth) / (root.height + 1);
+    // let x0 = Infinity;
+    // let x1 = -Infinity;
 
     const treeConstuctor = tree().nodeSize([dx, dy]);
 
@@ -46,10 +43,10 @@ class TreesEngine {
 
     treeConstuctor(root);
 
-    root.each((descendant) => {
-      if (descendant.x > x1) x1 = descendant.x;
-      if (descendant.x < x0) x0 = descendant.x;
-    });
+    // root.each((descendant) => {
+    //   if (descendant.x > x1) x1 = descendant.x;
+    //   if (descendant.x < x0) x0 = descendant.x;
+    // });
 
     // const height = x1 - x0 + dx * 2;
     // const width = x1 - x0 + dy * 2;
@@ -85,7 +82,11 @@ class TreesEngine {
       .join("g")
       .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
-    node.append("circle").attr("fill", "#fff").attr("r", 15);
+    node
+      .append("circle")
+      .attr("fill", "#fff")
+      .attr("r", 15)
+      .on("click", (e) => console.log(e));
 
     node
       .append("text")
@@ -103,7 +104,7 @@ class TreesEngine {
     this.treeState.height = height;
     this.treeState.width = width;
 
-    let { k, x, y } = this.treeState.lastUsedPosition
+    let { k, x, y } = this.treeState.lastUsedPosition;
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
@@ -129,6 +130,10 @@ class TreesEngine {
     this.treeState.lastUsedPosition = transform;
   }
 
+  zoomStartAndEnd(e) {
+    if (e.sourceEvent?.type === "mousedown") this.style.cursor = "grabbing";
+    if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
+  }
 
   // Might me usefull if future this enables grid creation
   // It requires some changes in class to not cause a bugs
