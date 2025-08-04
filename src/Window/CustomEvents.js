@@ -9,7 +9,7 @@ class CustomEvents {
     return this;
   }
 
-  getEvenet(eventName) {
+  getEvent(eventName) {
     const event = this.events[eventName];
 
     if (!event) throw new Error("Event not found");
