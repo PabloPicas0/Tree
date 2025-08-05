@@ -7,7 +7,7 @@ const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity 
 class TreesEngine {
   constructor() {
     this.treeElem = select(".tree");
-    this.treeState = {
+    this.state = {
       ...this.getParentSize(),
       padding: 2,
       lastUsedPosition: null,
@@ -21,50 +21,40 @@ class TreesEngine {
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      .on("start", this.zoomStartAndEnd)
-      .on("end", this.zoomStartAndEnd)
+      .on("start", this.#handleClick)
+      .on("end", this.#handleClick)
       .on("zoom", this.zoomed.bind(this));
+    this.treeConstuctor = tree();
 
     // translateBy on zoom handler prevents shfit to coordinates 0, 0 initially on first mouse drag
-    this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, this.treeState.offsetX, this.treeState.offsetY);
+    this.svg.call(this.zoomHandler).call(this.zoomHandler.translateBy, this.state.offsetX, this.state.offsetY);
   }
 
   createTree(data) {
-    const root = hierarchy(data);
+    this.root = hierarchy(data);
 
-    const dx = 90 + this.treeState.additionalTreeHeight;
-    const dy = (this.treeState.width + this.treeState.additionalTreeWidth) / (root.height + 1);
-    // let x0 = Infinity;
-    // let x1 = -Infinity;
+    const dx = 90 + this.state.additionalTreeHeight;
+    const dy = (this.state.width + this.state.additionalTreeWidth) / (this.root.height + 1);
 
-    const treeConstuctor = tree().nodeSize([dx, dy]);
+    this.treeConstuctor.nodeSize([dx, dy]);
 
-    root.sort((a, b) => ascending(a.data.name, b.data.name));
+    this.root.sort((a, b) => ascending(a.data.name, b.data.name));
+    this.treeConstuctor(this.root);
 
-    treeConstuctor(root);
-
-    // root.each((descendant) => {
-    //   if (descendant.x > x1) x1 = descendant.x;
-    //   if (descendant.x < x0) x0 = descendant.x;
-    // });
-
-    // const height = x1 - x0 + dx * 2;
-    // const width = x1 - x0 + dy * 2;
-    // this.svg.attr("viewBox", [0, 0, this.treeState.width + 500, height]);
     this.treeContainer = this.svg
       .append("g")
       .attr("class", "tree-container")
       // FIX: On window resize this cause a bug where tree have default position instead of last known
-      .attr("transform", `translate(${this.treeState.offsetX}, ${this.treeState.offsetY})`);
+      .attr("transform", `translate(${this.state.offsetX}, ${this.state.offsetY})`);
 
-    this.treeContainer
+    this.links = this.treeContainer
       .append("g")
       .attr("fill", "none")
       .attr("stroke", "#fafafa")
       .attr("stroke-opacity", 0.7)
       .attr("stroke-width", 1.5)
       .selectAll()
-      .data(root.links())
+      .data(this.root.links())
       .join("path")
       .attr(
         "d",
@@ -73,22 +63,22 @@ class TreesEngine {
           .y((d) => d.x)
       );
 
-    const node = this.treeContainer
+    this.nodes = this.treeContainer
       .append("g")
       .attr("stroke-linejoin", "miter")
       .attr("stroke-width", 3)
       .selectAll()
-      .data(root.descendants())
+      .data(this.root.descendants())
       .join("g")
       .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
-    node
+    this.nodes
       .append("circle")
       .attr("fill", "#fff")
       .attr("r", 15)
       .on("click", (e) => console.log(e));
 
-    node
+    this.nodes
       .append("text")
       .attr("dy", "2.31em")
       .attr("x", 0)
@@ -98,13 +88,36 @@ class TreesEngine {
       .attr("paint-order", "stroke");
   }
 
+  update() {
+    const dx = 90 + this.state.additionalTreeHeight;
+    const dy = (this.state.width + this.state.additionalTreeWidth) / (this.root.height + 1);
+
+    this.treeConstuctor.nodeSize([dx, dy]);
+    this.treeConstuctor(this.root);
+
+    this.links
+      .data(this.root.links())
+      .join("path")
+      .attr(
+        "d",
+        link(curveStep)
+          .x((d) => d.y)
+          .y((d) => d.x)
+      );
+
+    this.nodes
+      .data(this.root.descendants())
+      .join("g")
+      .attr("transform", (d) => `translate(${d.y},${d.x})`);
+  }
+
   reload(treeData) {
     const { height, width } = this.getParentSize();
 
-    this.treeState.height = height;
-    this.treeState.width = width;
+    this.state.height = height;
+    this.state.width = width;
 
-    let { k, x, y } = this.treeState.lastUsedPosition;
+    let { k, x, y } = this.state.lastUsedPosition;
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
@@ -127,61 +140,13 @@ class TreesEngine {
     const { transform } = event;
 
     this.treeContainer?.attr("transform", transform);
-    this.treeState.lastUsedPosition = transform;
+    this.state.lastUsedPosition = transform;
   }
 
-  zoomStartAndEnd(e) {
+  #handleClick(e) {
     if (e.sourceEvent?.type === "mousedown") this.style.cursor = "grabbing";
     if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
   }
-
-  // Might me usefull if future this enables grid creation
-  // It requires some changes in class to not cause a bugs
-
-  // createGrid() {
-  // const { padding, height, width } = this.treeState;
-
-  // const x = scaleLinear([0, 10], [padding / 2, width]);
-  // const y = scaleLinear([0, 10], [height - padding, 0]);
-
-  // const xAxis = axisBottom(x)
-  //   .tickSize(-height + padding)
-  //   .tickSizeInner(0)
-  //   .tickFormat((d, i) => "");
-
-  // const yAxis = axisLeft(y)
-  //   .tickSize(-width + padding / 2)
-  //   .tickSizeInner(0)
-  //   .tickFormat((d, i) => "");
-
-  // const gx = this.svg
-  //   .append("g")
-  //   .attr("transform", `translate(${-padding / 2}, ${height - padding})`)
-  //   .call(xAxis)
-  //   .call(setColor);
-
-  // const gy = this.svg.append("g").attr("transform", `translate(0, 0)`).call(yAxis).call(setColor);
-
-  // this.zoomHandler.on("zoom", zoomed.bind(this));
-
-  // function zoomed(event) {
-  // const transform = event.transform;
-  // const sx = transform.rescaleX(x);
-  // const sy = transform.rescaleY(y);
-
-  // this.treeContainer.attr("transform", transform);
-  // this.treeState.treePosition = transform;
-
-  // gx.call(xAxis.scale(sx)).call(setColor);
-  // gy.call(yAxis.scale(sy)).call(setColor);
-  //}
-
-  //   function setColor(g) {
-  //     const color = "#757575";
-  //     g.select(".domain").attr("stroke", color);
-  //     g.selectAll(".tick").select("line").attr("stroke", color);
-  //   }
-  // }
 }
 
 export default TreesEngine;
