@@ -1,8 +1,8 @@
 import OptionsEngine from "./OptionsEngine.js";
 
 class Options extends OptionsEngine {
-  constructor(elem, event) {
-    super(elem, event);
+  constructor(events) {
+    super(events);
     this.modal = document.querySelector(".modal");
     this.newTree = document.querySelector(".new-tree");
     this.form = document.querySelector(".file-picker");
@@ -12,8 +12,8 @@ class Options extends OptionsEngine {
     this.treePhotoLabel = document.querySelector(".picture-name");
     this.deleteTreeOption = document.querySelector(".delete");
     this.editTreeOption = document.querySelector(".edit");
-    this.treeWidthSilider = document.querySelector("#x");
-    this.treeHeightSilider = document.querySelector("#y");
+    this.treeWidthSilider = document.querySelector("#additionalTreeWidth");
+    this.treeHeightSilider = document.querySelector("#additionalTreeHeight");
 
     this.newTree.addEventListener("click", this.toggleModal.bind(this));
     this.exitModal.addEventListener("click", this.toggleModal.bind(this));
