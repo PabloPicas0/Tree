@@ -1,5 +1,5 @@
 class OptionsEngine {
-  constructor(elem, event) {
+  constructor(events) {
     this.state = {
       name: "",
       image: "",
@@ -7,8 +7,8 @@ class OptionsEngine {
       isEditMode: false,
     };
 
-    this.elem = elem
-    this.event = event
+    this.elem = events.listener;
+    this.reloadEvent = events.getEvent("reload");
 
     this.loadTreesFromDisc().then(this.drawToScreen.bind(this));
   }
@@ -78,7 +78,7 @@ class OptionsEngine {
         this.state.name = tree.name;
         this.state.image = tree.image;
         this.state.data[0] = tree.tree;
-        this.elem.dispatchEvent(this.event);
+        this.elem.dispatchEvent(this.reloadEvent);
       });
 
       button.append(image);
@@ -87,7 +87,7 @@ class OptionsEngine {
       options.append(div);
     }
 
-    this.elem.dispatchEvent(this.event);
+    this.elem.dispatchEvent(this.reloadEvent);
   }
 }
 
