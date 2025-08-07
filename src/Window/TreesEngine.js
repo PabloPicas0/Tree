@@ -6,15 +6,16 @@ const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity 
 // NOTE: start with oldest known person
 class TreesEngine {
   constructor() {
-    this.treeElem = select(".tree");
+    this.tree = select(".tree");
     this.state = {
-      ...this.getParentSize(),
       padding: 2,
-      lastUsedPosition: null,
+      lastTransform: null,
       additionalTreeHeight: 0,
       additionalTreeWidth: 500,
+      descendants: [],
+      ...this.getParentSize(),
     };
-    this.svg = this.treeElem.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
+    this.svg = this.tree.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
     this.zoomHandler = zoom()
       .scaleExtent([-1e100, 1e100])
       .translateExtent([
@@ -76,7 +77,19 @@ class TreesEngine {
       .append("circle")
       .attr("fill", "#fff")
       .attr("r", 15)
-      .on("click", (e) => console.log(e));
+      .on("click", (_, d) => {
+        const selectedNode = select(".selected-node")
+        const children = select(".children")
+        
+        this.state.descendants = d.data.children || []
+        
+        selectedNode.text(`Selected node: ${d.data.name}`);
+        children
+          .selectAll("li")
+          .data(this.state.descendants)
+          .join("li")
+          .text((d) => d.name);
+      })
 
     this.nodes
       .append("text")
@@ -117,7 +130,7 @@ class TreesEngine {
     this.state.height = height;
     this.state.width = width;
 
-    let { k, x, y } = this.state.lastUsedPosition;
+    let { k, x, y } = this.state.lastTransform;
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
@@ -130,7 +143,7 @@ class TreesEngine {
   }
 
   getParentSize() {
-    const { width, height } = this.treeElem.node().getBoundingClientRect();
+    const { width, height } = this.tree.node().getBoundingClientRect();
     const padding = 8 * 2;
 
     return { width: width - padding, height: height - padding, offsetX: 80, offsetY: height / 2 };
@@ -140,7 +153,7 @@ class TreesEngine {
     const { transform } = event;
 
     this.treeContainer?.attr("transform", transform);
-    this.state.lastUsedPosition = transform;
+    this.state.lastTransform = transform;
   }
 
   #handleClick(e) {
