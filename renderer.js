@@ -21,12 +21,14 @@ function handleSlider(e) {
 }
 
 // TODO: when there is no descendants find clicked node and append new descendant
-// TODO: there is no input validation for empty string
 function addDescendant() {
   const descendant = {
     name: options.newDescendant.value,
     children: [],
   };
+
+  if (descendant.name.trim() === "") return
+
   trees.state.descendants.push(descendant);
 
   reloadTree();
