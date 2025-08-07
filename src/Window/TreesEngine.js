@@ -22,8 +22,8 @@ class TreesEngine {
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      .on("start", this.#handleClick)
-      .on("end", this.#handleClick)
+      .on("start", this.#handleZoom)
+      .on("end", this.#handleZoom)
       .on("zoom", this.zoomed.bind(this));
     this.treeConstuctor = tree();
 
@@ -77,19 +77,7 @@ class TreesEngine {
       .append("circle")
       .attr("fill", "#fff")
       .attr("r", 15)
-      .on("click", (_, d) => {
-        const selectedNode = select(".selected-node")
-        const children = select(".children")
-        
-        this.state.descendants = d.data.children || []
-        
-        selectedNode.text(`Selected node: ${d.data.name}`);
-        children
-          .selectAll("li")
-          .data(this.state.descendants)
-          .join("li")
-          .text((d) => d.name);
-      })
+      .on("click", this.#handleNode.bind(this));
 
     this.nodes
       .append("text")
@@ -156,9 +144,23 @@ class TreesEngine {
     this.state.lastTransform = transform;
   }
 
-  #handleClick(e) {
+  #handleZoom(e) {
     if (e.sourceEvent?.type === "mousedown") this.style.cursor = "grabbing";
     if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
+  }
+
+  #handleNode(_, d) {
+    const selectedNode = select(".selected-node");
+    const children = select(".children");
+
+    this.state.descendants = d.data.children || [];
+
+    selectedNode.text(`Selected node: ${d.data.name}`);
+    children
+      .selectAll("li")
+      .data(this.state.descendants)
+      .join("li")
+      .text((d) => d.name);
   }
 }
 
