@@ -7,8 +7,8 @@ events.setEvent("reload");
 
 const options = new Options(events);
 const trees = new TreesEngine(options.state.data[0]);
-const reloadTree = () => trees.reload(options.state.data[0]);
 
+const reloadTree = () => trees.reload(options.state.data[0]);
 events.listener.addEventListener("reload", reloadTree);
 options.treeWidthSilider.addEventListener("input", handleSlider);
 options.treeHeightSilider.addEventListener("input", handleSlider);
@@ -20,7 +20,6 @@ function handleSlider(e) {
   trees.update();
 }
 
-
 function addDescendant() {
   const descendant = {
     name: options.newDescendant.value,
@@ -28,11 +27,11 @@ function addDescendant() {
   };
 
   if (descendant.name.trim() === "") return;
-  if (!trees.state.pickedNode.data.children) trees.state.pickedNode.data.children = []
 
   trees.state.pickedNode.data.children.push(descendant);
-  options.newDescendant.value = ""
+  options.newDescendant.value = "";
 
   reloadTree();
+  trees.updateNode(null, trees.state.pickedNode)
 }
 // window.addEventListener("resize", reloadTree);
