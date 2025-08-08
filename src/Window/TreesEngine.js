@@ -22,8 +22,8 @@ class TreesEngine {
         [-1e100, -1e100],
         [1e100, 1e100],
       ])
-      .on("start", this.#handleZoom)
-      .on("end", this.#handleZoom)
+      .on("start", this.#updateCursor)
+      .on("end", this.#updateCursor)
       .on("zoom", this.zoomed.bind(this));
     this.treeConstuctor = tree();
 
@@ -73,11 +73,7 @@ class TreesEngine {
       .join("g")
       .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
-    this.nodes
-      .append("circle")
-      .attr("fill", "#fff")
-      .attr("r", 15)
-      .on("click", this.#handleNode.bind(this));
+    this.nodes.append("circle").attr("fill", "#fff").attr("r", 15).on("click", this.updateNode.bind(this));
 
     this.nodes
       .append("text")
@@ -144,23 +140,22 @@ class TreesEngine {
     this.state.lastTransform = transform;
   }
 
-  #handleZoom(e) {
-    if (e.sourceEvent?.type === "mousedown") this.style.cursor = "grabbing";
-    if (e.sourceEvent?.type === "mouseup") this.style.cursor = "grab";
-  }
-
-  #handleNode(_, d) {
+  updateNode(_, d) {
     const selectedNode = select(".selected-node");
     const children = select(".children");
-
-    this.state.pickedNode = d
-
+    
+    this.state.pickedNode = d;
+    
     selectedNode.text(`Selected node: ${d.data.name}`);
     children
-      .selectAll("li")
-      .data(d.data.children || [])
-      .join("li")
-      .text((d) => d.name);
+    .selectAll("li")
+    .data(d.data.children)
+    .join("li")
+    .text((d) => d.name);
+  }
+  
+  #updateCursor(e) {
+    e.sourceEvent?.type === "mousedown" ? (this.style.cursor = "grabbing") : (this.style.cursor = "grab");
   }
 }
 
