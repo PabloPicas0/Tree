@@ -12,7 +12,7 @@ class TreesEngine {
       lastTransform: null,
       additionalTreeHeight: 0,
       additionalTreeWidth: 500,
-      descendants: [],
+      pickedNode: {},
       ...this.getParentSize(),
     };
     this.svg = this.tree.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
@@ -153,12 +153,12 @@ class TreesEngine {
     const selectedNode = select(".selected-node");
     const children = select(".children");
 
-    this.state.descendants = d.data.children || [];
+    this.state.pickedNode = d
 
     selectedNode.text(`Selected node: ${d.data.name}`);
     children
       .selectAll("li")
-      .data(this.state.descendants)
+      .data(d.data.children || [])
       .join("li")
       .text((d) => d.name);
   }
