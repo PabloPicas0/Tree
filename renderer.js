@@ -20,16 +20,18 @@ function handleSlider(e) {
   trees.update();
 }
 
-// TODO: when there is no descendants find clicked node and append new descendant
+
 function addDescendant() {
   const descendant = {
     name: options.newDescendant.value,
     children: [],
   };
 
-  if (descendant.name.trim() === "") return
+  if (descendant.name.trim() === "") return;
+  if (!trees.state.pickedNode.data.children) trees.state.pickedNode.data.children = []
 
-  trees.state.descendants.push(descendant);
+  trees.state.pickedNode.data.children.push(descendant);
+  options.newDescendant.value = ""
 
   reloadTree();
 }
