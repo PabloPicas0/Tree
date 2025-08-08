@@ -14,6 +14,8 @@ class Options extends OptionsEngine {
     this.editTreeOption = document.querySelector(".edit");
     this.treeWidthSilider = document.querySelector("#additionalTreeWidth");
     this.treeHeightSilider = document.querySelector("#additionalTreeHeight");
+    this.newDescendant = document.querySelector("#add-chldren-input");
+    this.addDescendant = document.querySelector(".add-children");
 
     this.newTree.addEventListener("click", this.toggleModal.bind(this));
     this.exitModal.addEventListener("click", this.toggleModal.bind(this));
