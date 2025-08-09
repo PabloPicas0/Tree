@@ -56,12 +56,12 @@ p {
 
 .accordion {
   display: grid;
-  grid-template-rows: repeat(2, 0fr);
+  grid-template-rows: 0fr;
   transition: grid-template-rows var(--universal-transition)
 }
 
 .accordion-on {
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: 1fr;
 }
 
 .accordion > div {
