@@ -17,6 +17,12 @@ class Options extends OptionsEngine {
     this.newDescendant = document.querySelector("#add-chldren-input");
     this.addDescendant = document.querySelector(".add-children");
 
+    const accordionButtons = document.querySelectorAll(".toggle-accordion-btn");
+    const accordions = document.querySelectorAll(".accordion");
+    const carrets = document.querySelectorAll(".carret");
+
+    accordionButtons.forEach((btn, idx) => btn.addEventListener("click", () => this.toggleAccordions(accordions, carrets, idx)));
+
     this.newTree.addEventListener("click", this.toggleModal.bind(this));
     this.exitModal.addEventListener("click", this.toggleModal.bind(this));
     this.deleteTreeOption.addEventListener("click", this.deleteTree.bind(this));
@@ -73,6 +79,11 @@ class Options extends OptionsEngine {
     this.treePhotoLabel.textContent = "";
     this.treePhotoInput.dataset.path = "";
     this.state.isEditMode = false;
+  }
+
+  toggleAccordions(accordions, carrets, idx) {
+    accordions[idx].classList.toggle("accordion-on");
+    carrets[idx].classList.toggle("carret-on");
   }
 }
 

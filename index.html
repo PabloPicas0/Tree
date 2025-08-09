@@ -16,6 +16,45 @@
     </div>
 
     <div class="options">
+      <div class="current-option" style="color: white">
+        <button class="option toggle-accordion-btn">
+          Tree dimensions
+          <img width="16px" height="16px" src="./assets/carret.svg" alt="carret" class="carret" />
+        </button>
+
+        <div class="accordion">
+          <div>
+            <p>Width</p>
+            <input type="range" min="0" max="5000" value="500" name="" id="additionalTreeWidth" />
+          </div>
+
+          <div>
+            <p>Height</p>
+            <input type="range" min="0" max="500" value="0" name="" id="additionalTreeHeight" />
+          </div>
+        </div>
+      </div>
+
+      <div class="current-option" style="color: white">
+        <button class="option toggle-accordion-btn">
+          Edit selected node
+          <img width="16px" height="16px" src="./assets/carret.svg" alt="carret" class="carret" />
+        </button>
+
+        <div class="accordion">
+          <div>
+            <input type="text" name="" id="add-chldren-input" placeholder="Add children" />
+            <button type="button" class="add-children">Add</button>
+          </div>
+
+          <div>
+            <p class="selected-node">Selected node:</p>
+            <p>Children:</p>
+            <ol class="children"></ol>
+          </div>
+        </div>
+      </div>
+
       <div class="current-option">
         <button class="option edit" data-name="" title="Edit tree">Edit current tree</button>
       </div>
@@ -25,9 +64,7 @@
       </div>
     </div>
 
-    <div class="tree">
-      <p>Tree</p>
-    </div>
+    <div class="tree"></div>
 
     <div class="modal modal-off">
       <form class="file-picker">
