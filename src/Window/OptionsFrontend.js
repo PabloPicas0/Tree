@@ -16,6 +16,8 @@ class Options extends OptionsEngine {
     this.treeHeightSilider = document.querySelector("#additionalTreeHeight");
     this.newDescendant = document.querySelector("#add-chldren-input");
     this.addDescendant = document.querySelector(".add-children");
+    this.editNode = document.querySelector(".edit-children")
+    this.deleteNode = document.querySelector(".delete-children")
 
     const accordionButtons = document.querySelectorAll(".toggle-accordion-btn");
     const accordions = document.querySelectorAll(".accordion");
