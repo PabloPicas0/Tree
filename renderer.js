@@ -12,6 +12,7 @@ events.listener.addEventListener("reload", reloadTree);
 options.treeWidthSilider.addEventListener("input", handleSlider);
 options.treeHeightSilider.addEventListener("input", handleSlider);
 options.addDescendant.addEventListener("click", addDescendant);
+options.newDescendant.addEventListener("keypress", (e) => (e.key === "Enter" ? addDescendant() : null));
 options.editNode.addEventListener("click", editNode);
 options.deleteNode.addEventListener("click", deleteNode);
 
@@ -43,10 +44,10 @@ function editNode() {
 
 function deleteNode() {
   const { pickedNode } = trees.state;
-  
+
   if (!pickedNode) return;
-  
-  const userAgreed = confirm(`Do you want to delete all nodes starting from ${pickedNode.data.name} ?`)
+
+  const userAgreed = confirm(`Do you want to delete all nodes starting from ${pickedNode.data.name} ?`);
 
   if (!userAgreed) return;
 
@@ -64,7 +65,7 @@ function addDescendant() {
 
   trees.state.pickedNode.data.children.push(descendant);
   options.newDescendant.value = "";
-  options.newDescendant.focus()
+  options.newDescendant.focus();
 
   reloadTree();
 }
