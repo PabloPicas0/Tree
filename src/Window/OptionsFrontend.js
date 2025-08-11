@@ -63,6 +63,10 @@ class Options extends OptionsEngine {
   }
 
   async deleteTree() {
+    const userAgreed = confirm("Do you want to delete this tree ?")
+
+    if (!userAgreed) return
+    
     await super.deleteTreeFromDisc();
     super.reload();
   }
