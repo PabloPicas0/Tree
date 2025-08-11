@@ -7,17 +7,17 @@ import deleteFilePing from "./src/Node/pings/deleteFilePing.js";
 import openFilePathDialogPing from "./src/Node/pings/openFilePathDialogPing.js";
 import updateFilePing from "./src/Node/pings/updateFilePing.js";
 
-function handlePings() {
-  ipcMain.handle("initTrees", initTrees);
-  ipcMain.handle("createFile", createFilePing);
-  ipcMain.handle("deleteFile", deleteFilePing);
-  ipcMain.handle("updateFile", updateFilePing);
-  ipcMain.handle("openFilePathDialog", openFilePathDialogPing);
-}
+const pings = [
+  { name: "initTrees", pingFn: initTrees },
+  { name: "createFile", pingFn: createFilePing },
+  { name: "deleteFile", pingFn: deleteFilePing },
+  { name: "updateFile", pingFn: updateFilePing },
+  { name: "openFilePathDialog", pingFn: openFilePathDialogPing },
+];
 
 app.whenReady().then(() => {
   createWindow();
-  handlePings();
+  pings.forEach((ping) => ipcMain.handle(ping.name, ping.pingFn));
 });
 
 app.on("window-all-closed", () => {
