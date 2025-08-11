@@ -13,7 +13,8 @@ events.listener.addEventListener("reload", reloadTree);
 options.treeWidthSilider.addEventListener("input", handleSlider);
 options.treeHeightSilider.addEventListener("input", handleSlider);
 options.addDescendant.addEventListener("click", addDescendant);
-options.editNode.addEventListener("click", editnode);
+options.editNode.addEventListener("click", editNode);
+options.deleteNode.addEventListener("click", deleteNode);
 
 function handleSlider(e) {
   const { valueAsNumber, id } = e.target;
@@ -21,10 +22,18 @@ function handleSlider(e) {
   trees.update();
 }
 
-function editnode() {
+function reloadTree() {
+  const { pickedNode } = trees.state;
+
+  if (pickedNode) trees.updateNode(null, pickedNode);
+
+  trees.reload(options.state.data[0]);
+}
+
+function editNode() {
   const newName = options.newDescendant.value;
 
-  if (newName === "") return;
+  if (newName === "" || !trees.state.pickedNode) return;
 
   trees.state.pickedNode.data.name = newName;
   options.newDescendant.value = "";
@@ -32,13 +41,18 @@ function editnode() {
   reloadTree();
 }
 
-function reloadTree()  {
+function deleteNode() {
   const { pickedNode } = trees.state;
-
-  if (pickedNode) trees.updateNode(null, pickedNode);
   
-  trees.reload(options.state.data[0]);
-};
+  if (!pickedNode) return;
+  
+  const userAgreed = confirm(`Do you want to delete all nodes starting from ${pickedNode.data.name} ?`)
+
+  if (!userAgreed) return;
+
+  pickedNode.data.children = [];
+  reloadTree();
+}
 
 function addDescendant() {
   const descendant = {
