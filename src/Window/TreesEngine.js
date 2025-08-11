@@ -10,9 +10,9 @@ class TreesEngine {
     this.state = {
       padding: 2,
       lastTransform: null,
+      pickedNode: null,
       additionalTreeHeight: 0,
       additionalTreeWidth: 500,
-      pickedNode: {},
       ...this.getParentSize(),
     };
     this.svg = this.tree.append("svg").attr("id", "tree").attr("width", `100%`).attr("height", `100%`);
@@ -143,17 +143,17 @@ class TreesEngine {
   updateNode(_, d) {
     const selectedNode = select(".selected-node");
     const children = select(".children");
-    
+
     this.state.pickedNode = d;
-    
+
     selectedNode.text(`Selected node: ${d.data.name}`);
     children
-    .selectAll("li")
-    .data(d.data.children)
-    .join("li")
-    .text((d) => d.name);
+      .selectAll("li")
+      .data(d.data.children)
+      .join("li")
+      .text((d) => d.name)
   }
-  
+
   #updateCursor(e) {
     e.sourceEvent?.type === "mousedown" ? (this.style.cursor = "grabbing") : (this.style.cursor = "grab");
   }
