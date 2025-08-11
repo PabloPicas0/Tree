@@ -2,7 +2,6 @@ import CustomEvents from "./src/Window/CustomEvents.js";
 import Options from "./src/Window/OptionsFrontend.js";
 import TreesEngine from "./src/Window/TreesEngine.js";
 
-// TODO: add CRUD options to all nodes
 const events = new CustomEvents();
 events.setEvent("reload");
 
@@ -37,6 +36,7 @@ function editNode() {
 
   trees.state.pickedNode.data.name = newName;
   options.newDescendant.value = "";
+  options.newDescendant.focus();
 
   reloadTree();
 }
@@ -64,6 +64,7 @@ function addDescendant() {
 
   trees.state.pickedNode.data.children.push(descendant);
   options.newDescendant.value = "";
+  options.newDescendant.focus()
 
   reloadTree();
 }
