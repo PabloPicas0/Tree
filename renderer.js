@@ -25,7 +25,10 @@ function handleSlider(e) {
 function reloadTree() {
   const { pickedNode } = trees.state;
 
-  if (pickedNode) trees.updateNode(null, pickedNode);
+  if (pickedNode) {
+    options.updateTreeFromDisc({ tree: options.state.data[0] });
+    trees.updateNode(null, pickedNode);
+  }
 
   trees.reload(options.state.data[0]);
 }
