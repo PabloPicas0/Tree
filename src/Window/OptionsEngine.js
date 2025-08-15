@@ -22,8 +22,8 @@ class OptionsEngine {
     await fileHandler.deleteFile(this.state.name);
   }
 
-  async updateTreeFromDisc(name, photoPath) {
-    await fileHandler.updateFile({ fileName: this.state.name, name, image: photoPath });
+  async updateTreeFromDisc(payload) {
+    await fileHandler.updateFile({ fileName: this.state.name, ...payload });
   }
 
   async createFileToDisc(name, photoPath) {
