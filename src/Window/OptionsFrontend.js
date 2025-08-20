@@ -16,14 +16,16 @@ class Options extends OptionsEngine {
     this.treeHeightSilider = document.querySelector("#additionalTreeHeight");
     this.newDescendant = document.querySelector("#add-chldren-input");
     this.addDescendant = document.querySelector(".add-children");
-    this.editNode = document.querySelector(".edit-children")
-    this.deleteNode = document.querySelector(".delete-children")
+    this.editNode = document.querySelector(".edit-children");
+    this.deleteNode = document.querySelector(".delete-children");
 
     const accordionButtons = document.querySelectorAll(".toggle-accordion-btn");
     const accordions = document.querySelectorAll(".accordion");
     const carrets = document.querySelectorAll(".carret");
 
-    accordionButtons.forEach((btn, idx) => btn.addEventListener("click", () => this.toggleAccordions(accordions, carrets, idx)));
+    accordionButtons.forEach((btn, idx) =>
+      btn.addEventListener("click", () => this.toggleAccordions(accordions[idx], carrets[idx]))
+    );
 
     this.newTree.addEventListener("click", this.toggleModal.bind(this));
     this.exitModal.addEventListener("click", this.toggleModal.bind(this));
@@ -55,7 +57,7 @@ class Options extends OptionsEngine {
     }
 
     this.state.isEditMode
-      ? await super.updateTreeFromDisc(name, photoPath)
+      ? await super.updateTreeFromDisc({ name, image: photoPath })
       : await super.createFileToDisc(name, photoPath);
 
     this.toggleModal();
@@ -63,10 +65,10 @@ class Options extends OptionsEngine {
   }
 
   async deleteTree() {
-    const userAgreed = confirm("Do you want to delete this tree ?")
+    const userAgreed = confirm("Do you want to delete this tree ?");
 
-    if (!userAgreed) return
-    
+    if (!userAgreed) return;
+
     await super.deleteTreeFromDisc();
     super.reload();
   }
@@ -87,9 +89,9 @@ class Options extends OptionsEngine {
     this.state.isEditMode = false;
   }
 
-  toggleAccordions(accordions, carrets, idx) {
-    accordions[idx].classList.toggle("accordion-on");
-    carrets[idx].classList.toggle("carret-on");
+  toggleAccordions(accordion, carret) {
+    accordion.classList.toggle("accordion-on");
+    carret.classList.toggle("carret-on");
   }
 }
 
