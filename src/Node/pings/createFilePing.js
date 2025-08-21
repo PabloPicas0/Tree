@@ -6,7 +6,7 @@ import isFilePresent from "../../utils/isFilePresent.js";
 // TODO: add error when operation failed
 async function createFilePing(e, name, photoPath) {
   const isNotPhotoIncluded = photoPath === "";
-  const fileNameExists = await isFilePresent("./trees", name)
+  const fileNameExists = await isFilePresent("./trees", name);
 
   if (fileNameExists) return;
 
@@ -17,7 +17,7 @@ async function createFilePing(e, name, photoPath) {
     name,
     image: savedPhotoPath,
     options: {},
-    tree: {},
+    tree: { name: "root", children: [] },
   };
 
   const initial = JSON.stringify(newFileContent);
