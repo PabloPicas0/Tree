@@ -6,7 +6,7 @@ const events = new CustomEvents();
 events.setEvent("reload");
 
 const options = new Options(events);
-const trees = new TreesEngine(options.state.data[0]);
+const trees = new TreesEngine();
 
 events.listener.addEventListener("reload", reloadTree);
 options.treeWidthSilider.addEventListener("input", handleSlider);
@@ -23,20 +23,29 @@ function handleSlider(e) {
 }
 
 function reloadTree() {
+  const { currentTree } = options.state;
+  const isNoData = Object.keys(currentTree).length === 0;
+
+  if (isNoData) {
+    trees.destroy();
+    return;
+  }
+
   const { pickedNode } = trees.state;
 
   if (pickedNode) {
-    options.updateTreeFromDisc({ tree: options.state.data[0] });
+    options.updateTreeFromDisc({ tree: currentTree });
     trees.updateNode(null, pickedNode);
   }
 
-  trees.reload(options.state.data[0]);
+  trees.reload(currentTree);
 }
 
 function editNode() {
   const newName = options.newDescendant.value;
+  const isRoot = trees.state.pickedNode.data.name === "root"
 
-  if (newName === "" || !trees.state.pickedNode) return;
+  if (newName === "" || isRoot || !trees.state.pickedNode) return;
 
   trees.state.pickedNode.data.name = newName;
   options.newDescendant.value = "";

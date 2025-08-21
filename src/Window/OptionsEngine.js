@@ -3,7 +3,7 @@ class OptionsEngine {
     this.state = {
       name: "",
       image: "",
-      data: [], // This needs to be array so when we change whole tree it's passed by reference to tree class
+      currentTree: {},
       isEditMode: false,
     };
 
@@ -35,10 +35,6 @@ class OptionsEngine {
     const newTrees = await this.loadTreesFromDisc();
 
     this.destroyTrees();
-
-    // TODO: add error boundry
-    if (!newTrees.length) return;
-
     this.drawToScreen(newTrees);
   }
 
@@ -51,7 +47,7 @@ class OptionsEngine {
 
     this.state.name = trees[0]?.name || "";
     this.state.image = trees[0]?.image || "";
-    this.state.data[0] = trees[0]?.tree || {};
+    this.state.currentTree = trees[0]?.tree || {};
 
     for (let i = 0; i < trees.length; ++i) {
       const tree = trees[i];
@@ -77,7 +73,7 @@ class OptionsEngine {
       button.addEventListener("click", () => {
         this.state.name = tree.name;
         this.state.image = tree.image;
-        this.state.data[0] = tree.tree;
+        this.state.currentTree = tree.tree;
         this.elem.dispatchEvent(this.reloadEvent);
       });
 
