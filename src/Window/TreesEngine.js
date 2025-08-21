@@ -1,7 +1,7 @@
 // Links:
 // https://observablehq.com/@d3/tree/2#data
 
-const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity } = d3;
+const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity, } = d3;
 
 // NOTE: start with oldest known person
 class TreesEngine {
@@ -80,7 +80,7 @@ class TreesEngine {
       .attr("dy", "2.31em")
       .attr("x", 0)
       .attr("text-anchor", "middle")
-      .text((d) => d.data.name)
+      .text((d) => `${d.data.name}, ${d.depth === 0 ? "Current" : d.depth} generation`)
       .attr("stroke", "white")
       .attr("paint-order", "stroke");
   }
