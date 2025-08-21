@@ -1,7 +1,7 @@
 // Links:
 // https://observablehq.com/@d3/tree/2#data
 
-const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity, } = d3;
+const { select, tree, hierarchy, ascending, curveStep, link, zoom, zoomIdentity } = d3;
 
 // NOTE: start with oldest known person
 class TreesEngine {
@@ -80,7 +80,9 @@ class TreesEngine {
       .attr("dy", "2.31em")
       .attr("x", 0)
       .attr("text-anchor", "middle")
-      .text((d) => `${d.data.name}, ${d.depth === 0 ? "Current" : d.depth} generation`)
+      .text((d) =>
+        d.data.name === "root" ? d.data.name : `${d.data.name}, ${d.depth} Generation`
+      )
       .attr("stroke", "white")
       .attr("paint-order", "stroke");
   }
@@ -118,11 +120,11 @@ class TreesEngine {
 
     this.svg.transition().duration(750).call(this.zoomHandler.transform, zoomIdentity.translate(x, y).scale(k));
 
-    this.destroyGrid();
+    this.destroy();
     this.createTree(treeData);
   }
 
-  destroyGrid() {
+  destroy() {
     this.svg.selectAll("g").remove();
   }
 
@@ -151,7 +153,7 @@ class TreesEngine {
       .selectAll("li")
       .data(d.data.children)
       .join("li")
-      .text((d) => d.name)
+      .text((d) => d.name);
   }
 
   #updateCursor(e) {
