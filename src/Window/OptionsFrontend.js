@@ -95,11 +95,11 @@ class Options extends OptionsEngine {
 
   disableOptions(disabled) {
     if (disabled) {
-      this.accordionButtons.forEach((btn) => (btn.disabled = disabled));
       this.accordions.forEach((accordion) => accordion.classList.remove("accordion-on"));
       this.carrets.forEach((carret) => carret.classList.remove("carret-on"));
     }
     
+    this.accordionButtons.forEach((btn) => (btn.disabled = disabled));
     this.editProfileOption.disabled = disabled;
     this.deleteProfileOption.disabled = disabled;
   }
