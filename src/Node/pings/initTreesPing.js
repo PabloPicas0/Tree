@@ -1,14 +1,22 @@
-import fs from "node:fs/promises"
+import fs from "node:fs/promises";
 
 async function initTrees() {
-  const files = await fs.readdir("./trees");
+  const path = "./trees";
 
-  if (!files.length) return [];
+  try {
+    const files = await fs.readdir(path);
 
-  const paths = files.map((file) => `.\\trees\\${file}`);
-  const data = await Promise.all(paths.map((path) => fs.readFile(path, { encoding: "utf-8" })));
-  
-  return data;
+    if (!files.length) return [];
+
+    const paths = files.map((file) => `.\\trees\\${file}`);
+    const data = await Promise.all(paths.map((path) => fs.readFile(path, { encoding: "utf-8" })));
+
+    return data;
+  } catch (error) {
+    fs.mkdir(path);
+
+    return [];
+  }
 }
 
-export default initTrees
+export default initTrees;
