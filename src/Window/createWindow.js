@@ -10,10 +10,16 @@ function createWindow() {
     height: 960,
     backgroundColor: "#fafafa",
     webPreferences: { preload: path.join(import.meta.dirname + "../../../", preloadPath) },
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#2f3241",
+      symbolColor: "#fff",
+      height: 30,
+    },
   });
 
   window.loadFile(indexPath);
-  window.webContents.openDevTools();
+  window.webContents.openDevTools()
   window.setMenu(null);
 }
 
