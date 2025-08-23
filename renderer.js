@@ -28,6 +28,7 @@ function reloadTree() {
 
   if (isNoData) {
     trees.destroy();
+    options.disableOptions(true)
     return;
   }
 
@@ -39,11 +40,12 @@ function reloadTree() {
   }
 
   trees.reload(currentTree);
+  options.disableOptions(false);
 }
 
 function editNode() {
   const newName = options.newDescendant.value;
-  const isRoot = trees.state.pickedNode.data.name === "root"
+  const isRoot = trees.state.pickedNode.data.name === "root";
 
   if (newName === "" || isRoot || !trees.state.pickedNode) return;
 
