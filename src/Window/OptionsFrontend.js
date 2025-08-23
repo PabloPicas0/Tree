@@ -10,28 +10,27 @@ class Options extends OptionsEngine {
     this.treeNameInput = document.querySelector("#tree-name");
     this.treePhotoInput = document.querySelector("#photo");
     this.treePhotoLabel = document.querySelector(".picture-name");
-    this.deleteTreeOption = document.querySelector(".delete");
-    this.editTreeOption = document.querySelector(".edit");
+    this.deleteProfileOption = document.querySelector(".delete");
+    this.editProfileOption = document.querySelector(".edit");
     this.treeWidthSilider = document.querySelector("#additionalTreeWidth");
     this.treeHeightSilider = document.querySelector("#additionalTreeHeight");
     this.newDescendant = document.querySelector("#add-chldren-input");
     this.addDescendant = document.querySelector(".add-children");
     this.editNode = document.querySelector(".edit-children");
     this.deleteNode = document.querySelector(".delete-children");
+    this.accordionButtons = document.querySelectorAll(".toggle-accordion-btn");
+    this.accordions = document.querySelectorAll(".accordion");
+    this.carrets = document.querySelectorAll(".carret");
 
-    const accordionButtons = document.querySelectorAll(".toggle-accordion-btn");
-    const accordions = document.querySelectorAll(".accordion");
-    const carrets = document.querySelectorAll(".carret");
-
-    accordionButtons.forEach((btn, idx) =>
-      btn.addEventListener("click", () => this.toggleAccordions(accordions[idx], carrets[idx]))
+    this.accordionButtons.forEach((btn, idx) =>
+      btn.addEventListener("click", () => this.toggleAccordions(this.accordions[idx], this.carrets[idx]))
     );
 
     this.newTree.addEventListener("click", this.toggleModal.bind(this));
     this.exitModal.addEventListener("click", this.toggleModal.bind(this));
-    this.deleteTreeOption.addEventListener("click", this.deleteTree.bind(this));
+    this.deleteProfileOption.addEventListener("click", this.deleteTree.bind(this));
     this.treePhotoInput.addEventListener("click", this.getPhotoPath.bind(this));
-    this.editTreeOption.addEventListener("click", this.editTree.bind(this));
+    this.editProfileOption.addEventListener("click", this.editTree.bind(this));
     this.form.addEventListener("submit", this.handleTree.bind(this));
   }
 
@@ -92,6 +91,17 @@ class Options extends OptionsEngine {
   toggleAccordions(accordion, carret) {
     accordion.classList.toggle("accordion-on");
     carret.classList.toggle("carret-on");
+  }
+
+  disableOptions(disabled) {
+    if (disabled) {
+      this.accordionButtons.forEach((btn) => (btn.disabled = disabled));
+      this.accordions.forEach((accordion) => accordion.classList.remove("accordion-on"));
+      this.carrets.forEach((carret) => carret.classList.remove("carret-on"));
+    }
+    
+    this.editProfileOption.disabled = disabled;
+    this.deleteProfileOption.disabled = disabled;
   }
 }
 
