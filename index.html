@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,94 +9,98 @@
     <title>Tree</title>
   </head>
   <body>
-    <div class="created-trees">
-      <div class="current-tree">
-        <button class="new-tree" title="Create new tree">+</button>
-      </div>
-    </div>
+    <div class="titlebar">Family Tree</div>
 
-    <div class="options">
-      <div class="current-option" style="color: white">
-        <button class="option toggle-accordion-btn">
-          Tree size
-          <img width="16px" height="16px" src="./assets/carret.svg" alt="carret" class="carret" />
-        </button>
-
-        <div class="accordion">
-          <div>
-            <div>
-              <p>Width</p>
-              <input type="range" min="0" max="5000" value="500" name="" id="additionalTreeWidth" />
-            </div>
-
-            <div>
-              <p>Height</p>
-              <input type="range" min="0" max="500" value="0" name="" id="additionalTreeHeight" />
-            </div>
-          </div>
+    <div class="app">
+      <div class="created-trees">
+        <div class="current-tree">
+          <button class="new-tree" title="Create new tree">+</button>
         </div>
       </div>
 
-      <div class="current-option" style="color: white">
-        <button class="option toggle-accordion-btn">
-          Edit selected node
-          <img width="16px" height="16px" src="./assets/carret.svg" alt="carret" class="carret" />
-        </button>
+      <div class="options">
+        <div class="current-option" style="color: white">
+          <button class="option toggle-accordion-btn">
+            Tree size
+            <img width="16px" height="16px" src="./assets/carret.svg" alt="carret" class="carret" />
+          </button>
 
-        <div class="accordion">
-          <div>
+          <div class="accordion">
             <div>
-              <div class="node-options-wrapper">
-                <button type="button" class="add-children option">Add</button>
-                <button type="button" class="edit-children option">Edit</button>
-                <button type="button" class="delete-children option">Delete</button>
+              <div>
+                <p>Width</p>
+                <input type="range" min="0" max="5000" value="500" name="" id="additionalTreeWidth" />
               </div>
 
-              <input type="text" id="add-chldren-input" placeholder="Name" />
+              <div>
+                <p>Height</p>
+                <input type="range" min="0" max="500" value="0" name="" id="additionalTreeHeight" />
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="current-option" style="color: white">
+          <button class="option toggle-accordion-btn">
+            Edit selected node
+            <img width="16px" height="16px" src="./assets/carret.svg" alt="carret" class="carret" />
+          </button>
+
+          <div class="accordion">
+            <div>
+              <div>
+                <div class="node-options-wrapper">
+                  <button type="button" class="add-children option">Add</button>
+                  <button type="button" class="edit-children option">Edit</button>
+                  <button type="button" class="delete-children option">Delete</button>
+                </div>
+
+                <input type="text" id="add-chldren-input" placeholder="Name" />
+              </div>
+
+              <div>
+                <p class="selected-node" style="margin-bottom: 0.8rem">Selected node</p>
+                <p class="selected-node">Children</p>
+                <ol class="children"></ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="current-option">
+          <button class="option edit" data-name="" title="Edit tree">Edit current profile</button>
+        </div>
+
+        <div class="current-option">
+          <button class="option delete" data-name="" title="Delete tree">Delete current profile</button>
+        </div>
+      </div>
+
+      <div class="tree"></div>
+
+      <div class="modal modal-off">
+        <form class="file-picker">
+          <button type="button" class="exit-modal">X</button>
+
+          <div class="file-picker-content">
+            <label for="photo" class="tree-name picture">Picture</label>
 
             <div>
-              <p class="selected-node" style="margin-bottom: 0.8rem;">Selected node</p>
-              <p class="selected-node">Children</p>
-              <ol class="children"></ol>
+              <span class="picture-name tree-name"></span>
+              <input type="button" name="photo" id="photo" value="Pick file" />
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="current-option">
-        <button class="option edit" data-name="" title="Edit tree">Edit current profile</button>
-      </div>
-
-      <div class="current-option">
-        <button class="option delete" data-name="" title="Delete tree">Delete current profile</button>
-      </div>
-    </div>
-
-    <div class="tree"></div>
-
-    <div class="modal modal-off">
-      <form class="file-picker">
-        <button type="button" class="exit-modal">X</button>
-
-        <div class="file-picker-content">
-          <label for="photo" class="tree-name picture">Picture</label>
+          <div class="file-picker-content">
+            <label for="tree-name" class="tree-name">Name</label>
+            <input type="text" name="name" id="tree-name" autofocus />
+          </div>
 
           <div>
-            <span class="picture-name tree-name"></span>
-            <input type="button" name="photo" id="photo" value="Pick file" />
+            <button type="submit" class="save">Save</button>
           </div>
-        </div>
-
-        <div class="file-picker-content">
-          <label for="tree-name" class="tree-name">Name</label>
-          <input type="text" name="name" id="tree-name" autofocus />
-        </div>
-
-        <div>
-          <button type="submit" class="save">Save</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </body>
 </html>
