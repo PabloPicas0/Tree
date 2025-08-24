@@ -19,7 +19,7 @@ function createWindow() {
   });
 
   window.loadFile(indexPath);
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
   window.setMenu(null);
 }
 
