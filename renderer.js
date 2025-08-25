@@ -12,7 +12,7 @@ events.listener.addEventListener("reload", reloadTree);
 options.treeWidthSilider.addEventListener("input", handleSlider);
 options.treeHeightSilider.addEventListener("input", handleSlider);
 options.addDescendant.addEventListener("click", addDescendant);
-options.newDescendant.addEventListener("keypress", (e) => (e.key === "Enter" ? addDescendant() : null));
+options.newDescendant.addEventListener("keypress", (e) => (e.key === "Enter" ? addDescendant(e) : null));
 options.editNode.addEventListener("click", editNode);
 options.deleteNode.addEventListener("click", deleteNode);
 
@@ -28,7 +28,7 @@ function reloadTree() {
 
   if (isNoData) {
     trees.destroy();
-    options.disableOptions(true)
+    options.disableOptions(true);
     return;
   }
 
@@ -69,15 +69,21 @@ function deleteNode() {
   reloadTree();
 }
 
-function addDescendant() {
+function addDescendant(e) {
   const descendant = {
     name: options.newDescendant.value,
     children: [],
   };
 
-  if (descendant.name.trim() === "") return;
+  if (descendant.name.trim() === "" || !trees.state.pickedNode) return;
 
-  trees.state.pickedNode.data.children.push(descendant);
+  const { children } = trees.state.pickedNode.data;
+
+  if (e.type === "click" && children.length) {
+    descendant.children = children.splice(0, Infinity)
+  }
+
+  children.push(descendant);
   options.newDescendant.value = "";
   options.newDescendant.focus();
 
