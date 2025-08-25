@@ -148,7 +148,7 @@ class TreesEngine {
 
     this.state.pickedNode = d;
 
-    selectedNode.html(`Selected node <br> <strong>${d.data.name}</strong>`);
+    selectedNode.html(`Selected parent <br> <strong>${d.data.name}</strong>`);
     children
       .selectAll("li")
       .data(d.data.children)
