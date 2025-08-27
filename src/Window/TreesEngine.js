@@ -80,9 +80,7 @@ class TreesEngine {
       .attr("dy", "2.31em")
       .attr("x", 0)
       .attr("text-anchor", "middle")
-      .text((d) =>
-        d.data.name === "root" ? d.data.name : `${d.data.name}, ${d.depth} Generation`
-      )
+      .text((d) => (d.data.name === "root" ? d.data.name : `${d.data.name}, ${d.depth} Generation`))
       .attr("stroke", "white")
       .attr("paint-order", "stroke");
   }
@@ -148,7 +146,11 @@ class TreesEngine {
 
     this.state.pickedNode = d;
 
-    selectedNode.html(`Selected parent <br> <strong>${d.data.name}</strong>`);
+    selectedNode.html(`
+      Selected parent 
+      <br> 
+      <strong>${d.data.name}</strong>
+      `);
     children
       .selectAll("li")
       .data(d.data.children)
